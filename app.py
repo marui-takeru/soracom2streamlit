@@ -116,7 +116,8 @@ if response.status_code == 200:
     # Create subplots for each selected y-axis
     for selected_y_axis in selected_y_axes:
         st.write(selected_y_axis)
-        st.line_chart(df[['日付', selected_y_axis]])
+        st.line_chart(df.set_index('日付')[selected_y_axis])  # Use set_index to use '日付' as index
+
     
     # Create a new Matplotlib figure
     fig = plt.figure(figsize=(10, 6 * len(selected_y_axes)))
