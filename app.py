@@ -108,29 +108,33 @@ if response.status_code == 200:
 
     # Display the DataFrame
     st.write(df)
-
+    
     # Allow users to select the y-axis data
     selected_y_axes = ['傾斜角X', '傾斜角Y', '電圧', '気温', '湿度']
     axis_labels = {'傾斜角X': 'Angle_X', '傾斜角Y': 'Angle_Y', '電圧': 'Voltage', '気温': 'Temperature', '湿度': 'Humidity'}
-
+    
     # Create subplots for each selected y-axis
     for selected_y_axis in selected_y_axes:
         st.write(selected_y_axis)
         st.line_chart(df[['日付', selected_y_axis]])
-
-
+    
+    # Create a new Matplotlib figure
+    fig = plt.figure(figsize=(10, 6 * len(selected_y_axes)))
+    
     # Plot scatter plots for selected_y-axes
     for i, selected_y_axis in enumerate(selected_y_axes):
-        axes[i].scatter(df['日付'], df[selected_y_axis], marker='o', color='b')
-        axes[i].set_ylabel(axis_labels[selected_y_axis])  # Use custom axis label
-        axes[i].set_xlabel('Time')  # Set x-axis label for each subplot
-        axes[i].grid(True)
-
+        ax = fig.add_subplot(len(selected_y_axes), 1, i+1)
+        ax.scatter(df['日付'], df[selected_y_axis], marker='o', color='b')
+        ax.set_ylabel(axis_labels[selected_y_axis])  # Use custom axis label
+        ax.set_xlabel('Time')  # Set x-axis label for each subplot
+        ax.grid(True)
+    
     # Adjust layout to prevent clipping of labels
     plt.tight_layout()
-
+    
     # Show the Matplotlib figure in Streamlit
     st.pyplot(fig)
-
-else:
+    
+    # Display error message if data fetching failed
+if response.status_code != 200:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
