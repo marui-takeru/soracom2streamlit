@@ -118,23 +118,6 @@ if response.status_code == 200:
         st.write(selected_y_axis)
         st.line_chart(df.set_index('日付')[selected_y_axis])  # Use set_index to use '日付' as index
     
-    # # Create a new Matplotlib figure
-    # fig = plt.figure(figsize=(10, 6 * len(selected_y_axes)))
-    
-    # # Plot scatter plots for selected_y-axes
-    # for i, selected_y_axis in enumerate(selected_y_axes):
-    #     ax = fig.add_subplot(len(selected_y_axes), 1, i+1)
-    #     ax.scatter(df['日付'], df[selected_y_axis], marker='o', color='b')
-    #     ax.set_ylabel(axis_labels[selected_y_axis])  # Use custom axis label
-    #     ax.set_xlabel('Time')  # Set x-axis label for each subplot
-    #     ax.grid(True)
-    
-    # # Adjust layout to prevent clipping of labels
-    # plt.tight_layout()
-    
-    # # Show the Matplotlib figure in Streamlit
-    # st.pyplot(fig)
-    
     # Display error message if data fetching failed
 if response.status_code != 200:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
