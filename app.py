@@ -114,7 +114,10 @@ if response.status_code == 200:
     axis_labels = {'傾斜角X': 'Angle_X', '傾斜角Y': 'Angle_Y', '電圧': 'Voltage', '気温': 'Temperature', '湿度': 'Humidity'}
 
     # Create subplots for each selected y-axis
-    fig, axes = plt.subplots(len(selected_y_axes), 1, figsize=(10, 6 * len(selected_y_axes)))
+    for selected_y_axis in selected_y_axes:
+        st.write(selected_y_axis)
+        st.line_chart(df[['日付', selected_y_axis]])
+
 
     # Plot scatter plots for selected_y-axes
     for i, selected_y_axis in enumerate(selected_y_axes):
