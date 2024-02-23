@@ -107,7 +107,7 @@ if response.status_code == 200:
 
 
     # Display the DataFrame
-    st.write(df.set_index('日付').drop(columns=['傾斜角Z']).head())
+    st.write(df.drop(columns=['傾斜角Z']).head())
 
     with st.expander("過去の記録を見る"):
         st.write(df.set_index('日付').drop(columns=['傾斜角Z']))
