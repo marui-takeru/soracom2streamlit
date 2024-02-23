@@ -116,7 +116,7 @@ if response.status_code == 200:
     # Create subplots for each selected y-axis
     for selected_y_axis in selected_y_axes:
         st.write(selected_y_axis)
-        st.scatter_chart(df.set_index('日付')[selected_y_axis])  # Use set_index to use '日付' as index
+        st.line_chart(df.set_index('日付')[selected_y_axis])  # Use set_index to use '日付' as index
     
     # Display error message if data fetching failed
 if response.status_code != 200:
