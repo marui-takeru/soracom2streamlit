@@ -107,7 +107,7 @@ if response.status_code == 200:
 
 
     # Display the DataFrame
-    st.write(df.iloc[:, :5])
+    st.write(df.head())
     
     # Allow users to select the y-axis data
     selected_y_axes = ['傾斜角X', '傾斜角Y', '電圧', '気温', '湿度']
