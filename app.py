@@ -109,7 +109,7 @@ if response.status_code == 200:
     # Display the DataFrame
     st.write(df.head())
 
-    with st.expander("Show all data"):
+    with st.expander("過去の記録を見る"):
         st.write(df)
     
     # Allow users to select the y-axis data
