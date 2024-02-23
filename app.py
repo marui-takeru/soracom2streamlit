@@ -7,7 +7,7 @@ import datetime
 import streamlit as st
 
 # APIの認証情報を環境変数から取得
-# Streamlit community cloudの「secrets」からOpenAI API keyを取得
+# Streamlit community cloudの「secrets」からSoracomAPIを取得
 api_username = st.secrets.APIs.api_username
 api_password = st.secrets.APIs.api_password
 api_email = st.secrets.APIs.api_email
