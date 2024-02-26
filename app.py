@@ -73,7 +73,18 @@ params = {
 }
 
 # Define URLs
-urls = [eval(f"url{i:02d}") for i in range(1, 11)]
+# urls = [eval(f"url{i:02d}") for i in range(1, 11)]
+urls = []
+urls.append("1 上田宅上")
+urls.append("2 井上宅上")
+urls.append("3 名古谷1")
+urls.append("4 久保田宅上")
+urls.append("5 泉谷")
+urls.append("6 清水宅上")
+urls.append("7 名古谷2")
+urls.append("8 横之地")
+urls.append("9 集会所上")
+urls.append("10 ヒラノジ")
 
 # Select a URL using a dropdown
 selected_index = st.selectbox('閲覧したい傾斜センサを選んでください', range(1, 11))
