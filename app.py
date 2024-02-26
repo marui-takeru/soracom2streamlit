@@ -73,27 +73,22 @@ params = {
 }
 
 # Define URLs
-# urls = [eval(f"url{i:02d}") for i in range(1, 11)]
-# URLsと表示名のペアを作成
 url_display_names = {
-    "上田宅上": url01,
-    "井上宅上": url02,
-    "名古谷1": url03,
-    "久保田宅上": url04,
-    "泉谷": url05,
-    "清水宅上": url06,
-    "名古谷2": url07,
-    "横之地": url08,
-    "集会所上": url09,
-    "ヒラノジ": url10
+    "1 上田宅上": url01,
+    "2 井上宅上": url02,
+    "3 名古谷1": url03,
+    "4 久保田宅上": url04,
+    "5 泉谷": url05,
+    "6 清水宅上": url06,
+    "7 名古谷2": url07,
+    "8 横之地": url08,
+    "9 集会所上": url09,
+    "10 ヒラノジ": url10
 }
 
 # Select a URL using a dropdown
-# Select a URL using a dropdown
 selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
 selected_url = url_display_names[selected_display_name]
-# selected_index = st.selectbox('閲覧したい傾斜センサを選んでください', range(1, 11))
-# selected_url = urls[selected_index - 1]
 
 # Fetch data for the selected URL
 response = requests.get(selected_url, headers=headers, params=params)
