@@ -25,7 +25,7 @@ url09 = st.secrets.APIs.url09
 url10 = st.secrets.APIs.url10
 
 # Streamlit app
-st.title('【試行段階】　堂野窪地区　傾斜センサ')
+st.title('【試行段階】　堂野窪傾斜計')
 
 #apiキーとトークンを作成
 auth = (api_username, api_password)
