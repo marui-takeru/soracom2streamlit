@@ -1,7 +1,6 @@
 # SORACOM Harvest Dataでデータを蓄積する（グループの設定）
 
-1.SORACOMユーザーコンソールにログインした後[Menu]>[SIM管理]とクリックしてSIM管理画面を開く．
-SORACOMユーザーコンソール：https://auth.soracom.io/login/?redirect=https%3A%2F%2Fconsole.soracom.io%2Fdashboard
+1. [SORACOMユーザーコンソール](https://auth.soracom.io/login/?redirect=https%3A%2F%2Fconsole.soracom.io%2Fdashboard)にログインした後[Menu]>[SIM管理]とクリックしてSIM管理画面を開く．  
 2. SORACOM HarvestDataでデータの収集を行いたいSIM（WioLTEに取り付けたSIM）にチェックを付け，[操作]>[所属グループ変更]とクリックする．
 3. 「新しい所属グループ」のプルダウンボックスをクリックした後，[新しいグループを作成...]をクリック．
 4. 「グループ作成」のグループ名を入力して[グループ作成]をクリック．
@@ -21,8 +20,8 @@ SORACOMユーザーコンソール：https://auth.soracom.io/login/?redirect=htt
 1. SORACOMユーザーコンソールの[Menu]>[SIM管理]とクリックしてSIM管理画面を開く．
 2. メタデータを設定したいSIM（WioLTEに取り付けたSIM）にチェックを付け，[詳細]をクリックする．
 3. 「SIM詳細」で[タグ]>「＋」をクリック
-4. 「タグの編集」で名前（Key）と値（Value）を設定する．
-　　設定例）
-　　名前：config_json
-　　値　：{"TV_OFF_THRESHOLD": 4, "TV_ON_DARK_THRESHOLD": 30, "TV_ON_BRIGHT_THRESHOLD": 200, "SENSING_INTERVAL_MS": 1000, "SAMPLING_COUNT": 10}
+4. 「タグの編集」で名前（Key）と値（Value）を設定する．  
+設定例）  
+名前：config_json  
+値　：{"TV_OFF_THRESHOLD": 4, "TV_ON_DARK_THRESHOLD": 30, "TV_ON_BRIGHT_THRESHOLD": 200, "SENSING_INTERVAL_MS": 1000, "SAMPLING_COUNT": 10}
 5. [保存]をクリックする．
