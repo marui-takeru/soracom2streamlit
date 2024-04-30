@@ -132,13 +132,13 @@ if response.status_code == 200:
     for selected_y_axis in selected_y_axes:
         st.write(selected_y_axis)
         st.line_chart(df.set_index('日付')[selected_y_axis])  # Use set_index to use '日付' as index
+
+    # Allow users to download all data as a CSV file
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()  # Encode CSV data as base64
+    href = f'<a href="data:text/csv;base64,{b64}" download="data.csv">ダウンロード全データ</a>'
+    st.markdown(f"### データのダウンロード\n{href}", unsafe_allow_html=True)
     
     # Display error message if data fetching failed
 if response.status_code != 200:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
-
-# Allow users to download all data as a CSV file
-csv = df.to_csv(index=False)
-b64 = base64.b64encode(csv.encode()).decode()  # Encode CSV data as base64
-href = f'<a href="data:text/csv;base64,{b64}" download="data.csv">ダウンロード全データ</a>'
-st.markdown(f"### データのダウンロード\n{href}", unsafe_allow_html=True)
