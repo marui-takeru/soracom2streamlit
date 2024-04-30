@@ -5,6 +5,7 @@ import json
 import requests
 import datetime
 import streamlit as st
+import base64
 
 # APIの認証情報を環境変数から取得
 # Streamlit community cloudの「secrets」からSoracomAPIを取得
@@ -136,7 +137,8 @@ if response.status_code == 200:
 if response.status_code != 200:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
 
-    # Allow users to download all the data obtained so far as an Excel file
-    all_data_df = pd.concat(df_list, ignore_index=True)
-    st.markdown(f"### データのダウンロード\n[ダウンロード全データ](data:text/csv;base64,{df.to_csv(index=False).encode('utf-8').decode()})", unsafe_allow_html=True)
-
+    # Allow users to download all data as a CSV file
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()  # Encode CSV data as base64
+    href = f'<a href="data:text/csv;base64,{b64}" download="data.csv">ダウンロード全データ</a>'
+    st.markdown(f"### データのダウンロード\n{href}", unsafe_allow_html=True)
