@@ -138,4 +138,5 @@ if response.status_code != 200:
 
     # Allow users to download all the data obtained so far as an Excel file
     all_data_df = pd.concat(df_list, ignore_index=True)
-    st.markdown(f"### データのダウンロード\nダウンロード全データ}", unsafe_allow_html=True)
+    st.markdown(f"### データのダウンロード\n[ダウンロード全データ](data:text/csv;base64,{df.to_csv(index=False).encode('utf-8').decode()})", unsafe_allow_html=True)
+
