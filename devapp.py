@@ -135,3 +135,7 @@ if response.status_code == 200:
     # Display error message if data fetching failed
 if response.status_code != 200:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
+
+    # Allow users to download all the data obtained so far as an Excel file
+    all_data_df = pd.concat(df_list, ignore_index=True)
+    st.markdown(f"### データのダウンロード\nダウンロード全データ}", unsafe_allow_html=True)
