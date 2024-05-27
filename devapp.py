@@ -4,6 +4,7 @@ import requests
 import datetime
 import streamlit as st
 import base64
+from sklearn import linear_model
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 
