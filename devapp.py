@@ -165,12 +165,6 @@ if response.status_code == 200:
     ax[1].legend()
 
     st.pyplot(fig)
-
-    # Allow users to download all data as a CSV file
-    csv = df.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()  # Encode CSV data as base64
-    href = f'<a href="data:text/csv;base64,{b64}" download="data.csv">ダウンロード全データ</a>'
-    st.markdown(f"### データのダウンロード\n{href}", unsafe_allow_html=True)
     
     # Display error message if data fetching failed
 if response.status_code != 200:
