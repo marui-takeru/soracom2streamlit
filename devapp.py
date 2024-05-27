@@ -156,7 +156,7 @@ if response.status_code == 200:
     ax[1].legend()
 
     ax[2].plot(df['日付'], df['気温'], label='Temperature')
-    ax[2].plot(df['日付'], df['Temperature'], label='Temperature')
+    ax[2].plot(df['日付'], df['気温'], label='Temperature')
     ax[2].set_title('Temperature')
     ax[2].legend()
 
