@@ -142,7 +142,7 @@ if response.status_code == 200:
 
     # データ数の表示
     num_samples = len(df)
-    st.write(f'使用されたデータ数：{num_samples}')
+    st.write(f'使用されたデータ数：{num_samples}個')
     
     # 平均気温の計算
     Tave = df['気温'].mean()
@@ -161,7 +161,7 @@ if response.status_code == 200:
     # データの修正
     df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
 
-    st.write(f'平均気温：{Tave}')
+    st.write(f'平均気温：{Tave}℃')
 
     # 前回の値との差分を計算して新しい列を追加
     df['Diff_X'] = df['Predicted_X'].diff()
