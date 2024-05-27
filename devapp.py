@@ -125,9 +125,19 @@ if response.status_code == 200:
     # 平均気温の計算
     Tave = df['気温'].mean()
 
+    # 選択した期間内のデータを使用して単回帰分析を行う
+    X = df['気温'].values.reshape(-1, 1)
+    y = df['傾斜角X（縦方向）'].values
+    
+    # 線形回帰モデルを構築
+    reg = LinearRegression().fit(X, y)
+    
+    # 回帰係数を取得
+    reg_coef = reg.coef_[0]
+
     # データの修正
-    df['傾斜角X（縦方向）'] = df['傾斜角X（縦方向）'] - 0.0077 * (df['気温'] - Tave)
-    df['傾斜角Y（横方向）'] = df['傾斜角Y（横方向）'] - 0.0077 * (df['気温'] - Tave)
+    df['傾斜角X（縦方向）'] = df['傾斜角X（縦方向）'] - reg * (df['気温'] - Tave)
+    df['傾斜角Y（横方向）'] = df['傾斜角Y（横方向）'] - reg * (df['気温'] - Tave)
 
     # # 単回帰分析の実施
     # X = df[['気温']].values
