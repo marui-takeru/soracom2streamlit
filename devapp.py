@@ -118,31 +118,24 @@ if response.status_code == 200:
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
     df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
 
-    # Allow users to select the y-axis data
-    selected_y_axes = ['傾斜角X（縦方向）', '傾斜角Y（横方向）', '電圧']
-    axis_labels = {'傾斜角X（縦方向）': 'Angle_X', '傾斜角Y（横方向）': 'Angle_Y', '電圧': 'Voltage'}
-    
-    # Create subplots for each selected y-axis
-    for selected_y_axis in selected_y_axes:
-        st.write(selected_y_axis)
-        st.line_chart(df.set_index('日付')[selected_y_axis])  # Use set_index to use '日付' as index
+    # 単回帰分析の実施
+    X = df[['気温']].values
+    y_X = df['傾斜角X（縦方向）'].values
+    y_Y = df['傾斜角Y（横方向）'].values
 
-    # 単回帰分析
-    X = df[['気温']].dropna()  # '気温'の欠損値を削除
-    X = X[X['気温'].notnull()]  # '気温'の欠損値を削除
-    X = X.astype(float)  # 数値型に変換
-
-    # 傾斜角X（縦方向）の単回帰分析
-    y_X = df.loc[X.index, '傾斜角X（縦方向）'].astype(float)  # '傾斜角X'の欠損値を削除
+    # 傾斜角Xの単回帰分析
     model_X = LinearRegression()
     model_X.fit(X, y_X)
-    df['傾斜角X_予測'] = model_X.predict(X)
+    y_X_pred = model_X.predict(X)
 
-    # 傾斜角Y（横方向）の単回帰分析
-    y_Y = df.loc[X.index, '傾斜角Y（横方向）'].astype(float)  # '傾斜角Y'の欠損値を削除
+    # 傾斜角Yの単回帰分析
     model_Y = LinearRegression()
     model_Y.fit(X, y_Y)
-    df['傾斜角Y_予測'] = model_Y.predict(X)
+    y_Y_pred = model_Y.predict(X)
+
+    # データの修正
+    df['傾斜角X（縦方向）'] = y_X_pred
+    df['傾斜角Y（横方向）'] = y_Y_pred
 
     # グラフのプロット
     fig, ax = plt.subplots(2, 1, figsize=(10, 8))
