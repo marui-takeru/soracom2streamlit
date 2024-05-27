@@ -143,7 +143,7 @@ if response.status_code == 200:
     st.write(f'平均気温{Tave}')
     
     # グラフのプロット
-    fig, ax = plt.subplots(2, 1, figsize=(10, 8))
+    fig, ax = plt.subplots(3, 1, figsize=(10, 8))
     
     ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
     ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
@@ -154,6 +154,11 @@ if response.status_code == 200:
     ax[1].plot(df['日付'], df['Predicted_Y'], label='Corrected Y')
     ax[1].set_title('Y')
     ax[1].legend()
+
+    ax[2].plot(df['日付'], df['気温'], label='Temperature')
+    ax[2].plot(df['日付'], df['Temperature'], label='Temperature')
+    ax[2].set_title('Temperature')
+    ax[2].legend()
 
     st.pyplot(fig)
     
