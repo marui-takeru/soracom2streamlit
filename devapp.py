@@ -140,7 +140,7 @@ if response.status_code == 200:
 
     # データ数の表示
     num_samples = len(df)
-    st.write(f'使用されたデータ数: {num_samples}')
+    st.write(f'使用されたデータ数：{num_samples}')
 
     # NaNを含む行を削除する
     df = df.dropna()
