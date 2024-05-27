@@ -137,13 +137,12 @@ if response.status_code == 200:
     df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
     df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
+    # NaNを含む行を削除する
+    df = df.dropna()
 
     # データ数の表示
     num_samples = len(df)
     st.write(f'使用されたデータ数：{num_samples}')
-
-    # NaNを含む行を削除する
-    df = df.dropna()
     
     # 平均気温の計算
     Tave = df['気温'].mean()
@@ -161,7 +160,6 @@ if response.status_code == 200:
 
     # データの修正
     df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
-    df['Predicted_Y'] = df['傾斜角Y（横方向）'] - reg_coef * (df['気温'] - Tave)
 
     st.write(f'平均気温：{Tave}')
 
@@ -169,26 +167,21 @@ if response.status_code == 200:
     df['Diff_X'] = df['Predicted_X'].diff()
     
     # グラフのプロット
-    fig, ax = plt.subplots(4, 1, figsize=(10, 20))
+    fig, ax = plt.subplots(3, 1, figsize=(10, 20))
     
     ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
     ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
     ax[0].set_title('X')
     ax[0].legend()
 
-    ax[1].plot(df['日付'], df['傾斜角Y（横方向）'], label='Corrected Y', linestyle='--')
-    ax[1].plot(df['日付'], df['Predicted_Y'], label='Corrected Y')
-    ax[1].set_title('Y')
+    ax[1].plot(df['日付'], df['気温'], label='Temperature')
+    ax[1].plot(df['日付'], df['気温'], label='Temperature')
+    ax[1].set_title('Temperature')
     ax[1].legend()
 
-    ax[2].plot(df['日付'], df['気温'], label='Temperature')
-    ax[2].plot(df['日付'], df['気温'], label='Temperature')
-    ax[2].set_title('Temperature')
+    ax[2].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
+    ax[2].set_title('Difference X')
     ax[2].legend()
-
-    ax[3].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
-    ax[3].set_title('Difference X')
-    ax[3].legend()
 
     st.pyplot(fig)
     
