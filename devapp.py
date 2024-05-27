@@ -137,8 +137,8 @@ if response.status_code == 200:
     st.write(f'回帰係数:{reg_coef}')
 
     # データの修正
-    df['傾斜角X（縦方向）'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
-    df['傾斜角Y（横方向）'] = df['傾斜角Y（横方向）'] - reg_coef * (df['気温'] - Tave)
+    df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+    df['Predicted_Y'] = df['傾斜角Y（横方向）'] - reg_coef * (df['気温'] - Tave)
 
     # # 単回帰分析の実施
     # X = df[['気温']].values
@@ -175,12 +175,12 @@ if response.status_code == 200:
     # ax[1].legend()
 
     
-    ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Corrected 傾斜角X（縦方向）')
-    ax[0].set_title('傾斜角X（縦方向）')
+    ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X')
+    ax[0].set_title('X')
     ax[0].legend()
 
-    ax[1].plot(df['日付'], df['傾斜角Y（横方向）'], label='Corrected 傾斜角Y（横方向）')
-    ax[1].set_title('傾斜角Y（横方向）')
+    ax[1].plot(df['日付'], df['Predicted_Y'], label='Corrected Y')
+    ax[1].set_title('Y')
     ax[1].legend()
 
     st.pyplot(fig)
