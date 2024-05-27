@@ -1,3 +1,5 @@
+!pip install scikit-learn matplotlib
+
 import pandas as pd
 import json
 import requests
