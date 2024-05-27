@@ -140,7 +140,7 @@ if response.status_code == 200:
     df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
     df['Predicted_Y'] = df['傾斜角Y（横方向）'] - reg_coef * (df['気温'] - Tave)
 
-    st.write(f'平均気温{T_ave}')
+    st.write(f'平均気温{Tave}')
     
     # グラフのプロット
     fig, ax = plt.subplots(2, 1, figsize=(10, 8))
