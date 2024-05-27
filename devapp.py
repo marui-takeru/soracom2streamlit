@@ -164,9 +164,12 @@ if response.status_code == 200:
     df['Predicted_Y'] = df['傾斜角Y（横方向）'] - reg_coef * (df['気温'] - Tave)
 
     st.write(f'平均気温：{Tave}')
+
+    # 前回の値との差分を計算して新しい列を追加
+    df['Diff_X'] = df['傾斜角X（縦方向）'].diff()
     
     # グラフのプロット
-    fig, ax = plt.subplots(3, 1, figsize=(10, 16))
+    fig, ax = plt.subplots(4, 1, figsize=(10, 20))
     
     ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
     ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
@@ -182,6 +185,10 @@ if response.status_code == 200:
     ax[2].plot(df['日付'], df['気温'], label='Temperature')
     ax[2].set_title('Temperature')
     ax[2].legend()
+
+    ax[3].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
+    ax[3].set_title('Difference X')
+    ax[3].legend()
 
     st.pyplot(fig)
     
