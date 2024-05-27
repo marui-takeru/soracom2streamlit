@@ -152,9 +152,6 @@ if response.status_code == 200:
 
     st.pyplot(fig)
     
-    # Display the DataFrame
-    st.write(df)
-    
     # Display error message if data fetching failed
 if response.status_code != 200:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
