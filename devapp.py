@@ -140,6 +140,9 @@ if response.status_code == 200:
     df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
     df['Predicted_Y'] = df['傾斜角Y（横方向）'] - reg_coef * (df['気温'] - Tave)
     
+    # グラフのプロット
+    fig, ax = plt.subplots(2, 1, figsize=(10, 8))
+    
     ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
     ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
     ax[0].set_title('X')
