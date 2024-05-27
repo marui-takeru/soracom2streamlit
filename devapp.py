@@ -110,8 +110,8 @@ if response.status_code == 200:
 
     # Convert columns to appropriate data types
     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-    df['傾斜角X'] = pd.to_numeric(df['傾斜角X'], errors='coerce')
-    df['傾斜角Y'] = pd.to_numeric(df['傾斜角Y'], errors='coerce')
+    df['傾斜角X（縦方向）'] = pd.to_numeric(df['傾斜角X'], errors='coerce')
+    df['傾斜角Y（横方向）'] = pd.to_numeric(df['傾斜角Y'], errors='coerce')
     df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
     df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
@@ -125,7 +125,7 @@ if response.status_code == 200:
     #     st.write(df.set_index('日付').drop(columns=['傾斜角Z']))
     
     # Allow users to select the y-axis data
-    selected_y_axes = ['傾斜角X', '傾斜角Y', '電圧']
+    selected_y_axes = ['傾斜角X（縦方向）', '傾斜角Y（横方向）', '電圧']
     axis_labels = {'傾斜角X（縦方向）': 'Angle_X', '傾斜角Y（横方向）': 'Angle_Y', '電圧': 'Voltage'}
     
     # Create subplots for each selected y-axis
