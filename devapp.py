@@ -107,12 +107,30 @@ if response.status_code == 200:
         tmp = inclination[i].split(sep=',')
         inclination[i] = tmp
 
+    # 前回の値を保持するための変数
+    prev_value = None
+    
+    def convert_to_numeric_with_threshold(value):
+        global prev_value
+        # 前回の値が存在しない場合はそのまま数値に変換
+        if prev_value is None:
+            prev_value = value
+            return pd.to_numeric(value, errors='coerce')
+    
+        # 前回の値との差が3度以上の場合はNaNを返す
+        if abs(float(value) - float(prev_value)) >= 3:
+            return float('NaN')
+        
+        # 差が3度未満の場合はそのまま数値に変換
+        prev_value = value
+        return pd.to_numeric(value, errors='coerce')
+
     df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
 
     # Convert columns to appropriate data types
     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-    df['傾斜角X（縦方向）'] = pd.to_numeric(df['傾斜角X'], errors='coerce')
-    df['傾斜角Y（横方向）'] = pd.to_numeric(df['傾斜角Y'], errors='coerce')
+    df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
+    df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
     df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
     df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
