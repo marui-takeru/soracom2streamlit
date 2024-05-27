@@ -171,16 +171,16 @@ if response.status_code == 200:
     
     ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
     ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
-    ax[0].set_title('X')
+    ax[0].set_title('Value X')
     ax[0].legend()
 
-    ax[1].plot(df['日付'], df['気温'], label='Temperature')
-    ax[1].plot(df['日付'], df['気温'], label='Temperature')
-    ax[1].set_title('Temperature')
+    ax[1].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
+    ax[1].set_title('Difference X')
     ax[1].legend()
 
-    ax[2].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
-    ax[2].set_title('Difference X')
+    ax[2].plot(df['日付'], df['気温'], label='Temperature')
+    ax[2].plot(df['日付'], df['気温'], label='Temperature')
+    ax[2].set_title('Temperature')
     ax[2].legend()
 
     st.pyplot(fig)
