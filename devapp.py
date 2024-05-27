@@ -160,7 +160,6 @@ if response.status_code == 200:
 
     # データの修正
     df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
-
     st.write(f'平均気温：{Tave}℃')
 
     # 前回の値との差分を計算して新しい列を追加
@@ -180,13 +179,13 @@ if response.status_code == 200:
     ax[1].set_title('Difference X')
     ax[1].legend()
 
-    ax[2].plot(df['日付'], df['気温'], label='Temperature')
-    ax[2].plot(df['日付'], df['気温'], label='Temperature')
-    ax[2].set_title('Temperature')
+    ax[2].plot(df['日付'], df['Cumulative_Diff_X'], label='Cumulative Diff X', color='green')
+    ax[2].set_title('Cumulative Difference X')
     ax[2].legend()
 
-    ax[3].plot(df['日付'], df['Cumulative_Diff_X'], label='Cumulative Diff X', color='green')
-    ax[3].set_title('Cumulative Difference X')
+    ax[3].plot(df['日付'], df['気温'], label='Temperature')
+    ax[3].plot(df['日付'], df['気温'], label='Temperature')
+    ax[3].set_title('Temperature')
     ax[3].legend()
 
     st.pyplot(fig)
