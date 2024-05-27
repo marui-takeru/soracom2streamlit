@@ -151,17 +151,17 @@ if response.status_code == 200:
     fig, ax = plt.subplots(2, 1, figsize=(10, 8))
 
     # 傾斜角X（縦方向）をプロット
-    ax[0].scatter(df['気温'], df['傾斜角X（縦方向）'], color='blue', label='実測値')
-    ax[0].plot(df['気温'], df['傾斜角X_予測'], color='red', label='予測値')
-    ax[0].set_xlabel('気温')
-    ax[0].set_ylabel('傾斜角X（縦方向）')
+    ax[0].scatter(df['気温'], df['傾斜角X（縦方向）'], color='blue', label='ActualValue')
+    ax[0].plot(df['気温'], df['傾斜角X_予測'], color='red', label='ExpectedValue')
+    ax[0].set_xlabel('Temperature')
+    ax[0].set_ylabel('X-Axis')
     ax[0].legend()
 
     # 傾斜角Y（横方向）をプロット
-    ax[1].scatter(df['気温'], df['傾斜角Y（横方向）'], color='blue', label='実測値')
-    ax[1].plot(df['気温'], df['傾斜角Y_予測'], color='red', label='予測値')
-    ax[1].set_xlabel('気温')
-    ax[1].set_ylabel('傾斜角Y（横方向）')
+    ax[1].scatter(df['気温'], df['傾斜角Y（横方向）'], color='blue', label='ActualValue')
+    ax[1].plot(df['気温'], df['傾斜角Y_予測'], color='red', label='ExpectedValue')
+    ax[1].set_xlabel('Temperature')
+    ax[1].set_ylabel('Y-Axis')
     ax[1].legend()
 
     st.pyplot(fig)
