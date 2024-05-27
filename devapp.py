@@ -142,6 +142,9 @@ if response.status_code == 200:
     num_samples = len(df)
     st.write(f'使用されたデータ数: {num_samples}')
 
+    # NaNを含む行を削除する
+    df = df.dropna()
+    
     # 平均気温の計算
     Tave = df['気温'].mean()
 
