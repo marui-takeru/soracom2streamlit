@@ -163,7 +163,7 @@ if response.status_code == 200:
     st.write(f'平均気温：{Tave}℃')
 
     # 前回の値との差分を計算して新しい列を追加
-    df['Diff_X'] = df['Predicted_X'].diff()
+    df['Diff_X'] = df['傾斜角X（縦方向）'].diff()
 
     # Diff_Xの最大値を計算
     max_diff_x = df['Diff_X'].max()
