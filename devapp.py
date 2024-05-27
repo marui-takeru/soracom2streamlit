@@ -123,9 +123,9 @@ if response.status_code == 200:
         if abs(float(value) - float(prev_value)) >= 3:
             return float('NaN')
     
-    # 差が3度未満の場合はそのまま数値に変換
-    prev_value = value
-    return pd.to_numeric(value, errors='coerce')
+        # 差が3度未満の場合はそのまま数値に変換
+        prev_value = value
+        return pd.to_numeric(value, errors='coerce')
 
     df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
 
