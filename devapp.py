@@ -1,5 +1,3 @@
-# 以下を「app.py」に書き込み
-
 import pandas as pd
 import json
 import requests
