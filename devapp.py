@@ -118,9 +118,6 @@ if response.status_code == 200:
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
     df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
 
-    # Display the DataFrame
-    st.write(df.drop(columns=['傾斜角Z']).head())
-
     # Allow users to select the y-axis data
     selected_y_axes = ['傾斜角X（縦方向）', '傾斜角Y（横方向）', '電圧']
     axis_labels = {'傾斜角X（縦方向）': 'Angle_X', '傾斜角Y（横方向）': 'Angle_Y', '電圧': 'Voltage'}
