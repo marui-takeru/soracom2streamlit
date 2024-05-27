@@ -147,21 +147,20 @@ if response.status_code == 200:
     # グラフのプロット
     fig, ax = plt.subplots(2, 1, figsize=(10, 8))
 
-    # 傾斜角X（縦方向）をプロット
-    ax[0].scatter(df['気温'], df['傾斜角X（縦方向）'], color='blue', label='ActualValue')
-    ax[0].plot(df['気温'], df['傾斜角X_予測'], color='red', label='ExpectedValue')
-    ax[0].set_xlabel('Temperature')
-    ax[0].set_ylabel('X-Axis')
+    ax[0].plot(df['日付'], y_X, label='Actual 傾斜角X（縦方向）')
+    ax[0].plot(df['日付'], y_X_pred, label='Predicted 傾斜角X（縦方向）', linestyle='--')
+    ax[0].set_title('傾斜角X（縦方向）')
     ax[0].legend()
 
-    # 傾斜角Y（横方向）をプロット
-    ax[1].scatter(df['気温'], df['傾斜角Y（横方向）'], color='blue', label='ActualValue')
-    ax[1].plot(df['気温'], df['傾斜角Y_予測'], color='red', label='ExpectedValue')
-    ax[1].set_xlabel('Temperature')
-    ax[1].set_ylabel('Y-Axis')
+    ax[1].plot(df['日付'], y_Y, label='Actual 傾斜角Y（横方向）')
+    ax[1].plot(df['日付'], y_Y_pred, label='Predicted 傾斜角Y（横方向）', linestyle='--')
+    ax[1].set_title('傾斜角Y（横方向）')
     ax[1].legend()
 
     st.pyplot(fig)
+    
+    # Display the DataFrame
+    st.write(df)
     
     # Display error message if data fetching failed
 if response.status_code != 200:
