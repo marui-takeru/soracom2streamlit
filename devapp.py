@@ -118,6 +118,10 @@ if response.status_code == 200:
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
     df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
 
+    # データ数の表示
+    num_samples = len(df)
+    st.write(f'使用されたデータ数: {num_samples}')
+
     # 単回帰分析の実施
     X = df[['気温']].values
     y_X = df['傾斜角X（縦方向）'].values
