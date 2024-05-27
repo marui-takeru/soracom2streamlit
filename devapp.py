@@ -4,6 +4,8 @@ import requests
 import datetime
 import streamlit as st
 import base64
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
 
 # APIの認証情報を環境変数から取得
 # Streamlit community cloudの「secrets」からSoracomAPIを取得
@@ -115,13 +117,9 @@ if response.status_code == 200:
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
     df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
 
-
     # Display the DataFrame
-    # st.write(df.drop(columns=['傾斜角Z']).head())
+    st.write(df.drop(columns=['傾斜角Z']).head())
 
-    # with st.expander("過去の記録を見る"):
-    #     st.write(df.set_index('日付').drop(columns=['傾斜角Z']))
-    
     # Allow users to select the y-axis data
     selected_y_axes = ['傾斜角X（縦方向）', '傾斜角Y（横方向）', '電圧']
     axis_labels = {'傾斜角X（縦方向）': 'Angle_X', '傾斜角Y（横方向）': 'Angle_Y', '電圧': 'Voltage'}
@@ -131,12 +129,44 @@ if response.status_code == 200:
         st.write(selected_y_axis)
         st.line_chart(df.set_index('日付')[selected_y_axis])  # Use set_index to use '日付' as index
 
+    # 単回帰分析
+    X = df[['気温']].dropna()  # '気温'の欠損値を削除
+    X = X[X['気温'].notnull()]  # '気温'の欠損値を削除
+    X = X.astype(float)  # 数値型に変換
+
+    # 傾斜角X（縦方向）の単回帰分析
+    y_X = df.loc[X.index, '傾斜角X（縦方向）'].astype(float)  # '傾斜角X'の欠損値を削除
+    model_X = LinearRegression()
+    model_X.fit(X, y_X)
+    df['傾斜角X_予測'] = model_X.predict(X)
+
+    # 傾斜角Y（横方向）の単回帰分析
+    y_Y = df.loc[X.index, '傾斜角Y（横方向）'].astype(float)  # '傾斜角Y'の欠損値を削除
+    model_Y = LinearRegression()
+    model_Y.fit(X, y_Y)
+    df['傾斜角Y_予測'] = model_Y.predict(X)
+
+    # グラフのプロット
+    fig, ax = plt.subplots(2, 1, figsize=(10, 8))
+
+    # 傾斜角X（縦方向）をプロット
+    ax[0].scatter(df['気温'], df['傾斜角X（縦方向）'], color='blue', label='実測値')
+    ax[0].plot(df['気温'], df['傾斜角X_予測'], color='red', label='予測値')
+    ax[0].set_xlabel('気温')
+    ax[0].set_ylabel('傾斜角X（縦方向）')
+    ax[0].legend()
+
+    # 傾斜角Y（横方向）をプロット
+    ax[1].scatter(df['気温'], df['傾斜角Y（横方向）'], color='blue', label='実測値')
+    ax[1].plot(df['気温'], df['傾斜角Y_予測'], color='red', label='予測値')
+    ax[1].set_xlabel('気温')
+    ax[1].set_ylabel('傾斜角Y（横方向）')
+    ax[1].legend()
+
+    st.pyplot(fig)
+
     # Allow users to download all data as a CSV file
-    # csv = df.to_csv(index=False)
-    # b64 = base64.b64encode(csv.encode()).decode()  # Encode CSV data as base64
-    # href = f'<a href="data:text/csv;base64,{b64}" download="data.csv">ダウンロード全データ</a>'
-    # st.markdown(f"### データのダウンロード\n{href}", unsafe_allow_html=True)
-    
-    # Display error message if data fetching failed
-if response.status_code != 200:
-    st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()  # Encode CSV data as base64
+    href = f'<a href="data:text/csv;base64,{b64}" download="data.csv">ダウンロード全データ</a>'
+    st.markdown(f"### デ
