@@ -134,6 +134,7 @@ if response.status_code == 200:
     
     # 回帰係数を取得
     reg_coef = reg.coef_[0]
+    st.write(f'回帰係数:{reg_coef}')
 
     # データの修正
     df['傾斜角X（縦方向）'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
