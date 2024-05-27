@@ -136,8 +136,8 @@ if response.status_code == 200:
     reg_coef = reg.coef_[0]
 
     # データの修正
-    df['傾斜角X（縦方向）'] = df['傾斜角X（縦方向）'] - reg * (df['気温'] - Tave)
-    df['傾斜角Y（横方向）'] = df['傾斜角Y（横方向）'] - reg * (df['気温'] - Tave)
+    df['傾斜角X（縦方向）'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+    df['傾斜角Y（横方向）'] = df['傾斜角Y（横方向）'] - reg_coef * (df['気温'] - Tave)
 
     # # 単回帰分析の実施
     # X = df[['気温']].values
