@@ -132,7 +132,7 @@ if response.status_code == 200:
     # Convert columns to appropriate data types
     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
     df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
-    df['傾斜角Y（横方向）'] = pd.to_numeric(df['傾斜角Y'], errors='coerce')
+    df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
     df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
     df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
@@ -157,13 +157,13 @@ if response.status_code == 200:
     
     # 回帰係数を取得
     reg_coef = reg.coef_[0]
-    st.write(f'回帰係数:{reg_coef}')
+    st.write(f'回帰係数：{reg_coef}')
 
     # データの修正
     df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
     df['Predicted_Y'] = df['傾斜角Y（横方向）'] - reg_coef * (df['気温'] - Tave)
 
-    st.write(f'平均気温{Tave}')
+    st.write(f'平均気温：{Tave}')
     
     # グラフのプロット
     fig, ax = plt.subplots(3, 1, figsize=(10, 16))
