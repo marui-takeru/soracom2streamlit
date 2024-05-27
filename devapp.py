@@ -134,8 +134,8 @@ if response.status_code == 200:
     y_Y_pred = model_Y.predict(X)
 
     # データの修正
-    df['傾斜角X（縦方向）'] = y_X_pred
-    df['傾斜角Y（横方向）'] = y_Y_pred
+    df['傾斜角X（縦方向）'] = y_X - y_X_pred
+    df['傾斜角Y（横方向）'] = y_Y - y_Y_pred
 
     # グラフのプロット
     fig, ax = plt.subplots(2, 1, figsize=(10, 8))
