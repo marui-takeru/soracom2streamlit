@@ -139,46 +139,13 @@ if response.status_code == 200:
     # データの修正
     df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
     df['Predicted_Y'] = df['傾斜角Y（横方向）'] - reg_coef * (df['気温'] - Tave)
-
-    # # 単回帰分析の実施
-    # X = df[['気温']].values
-    # y_X = df['傾斜角X（縦方向）'].values
-    # y_Y = df['傾斜角Y（横方向）'].values
-
-    # # 傾斜角Xの単回帰分析
-    # model_X = LinearRegression()
-    # model_X.fit(X, y_X)
-    # y_X_pred = model_X.predict(X)
-    # coef_X = model_X.coef_[0]  # 回帰係数
-
-    # # 傾斜角Yの単回帰分析
-    # model_Y = LinearRegression()
-    # model_Y.fit(X, y_Y)
-    # y_Y_pred = model_Y.predict(X)
-    # coef_Y = model_Y.coef_[0]  # 回帰係数
-
-    # # データの修正
-    # df['傾斜角X（縦方向）'] = df['傾斜角X（縦方向）'] - coef_X
-    # df['傾斜角Y（横方向）'] = df['傾斜角Y（横方向）'] - coef_Y
-
-    # グラフのプロット
-    fig, ax = plt.subplots(2, 1, figsize=(10, 8))
-
-    # ax[0].plot(df['日付'], y_X, label='Actual 傾斜角X（縦方向）')
-    # ax[0].plot(df['日付'], y_X_pred, label='Predicted 傾斜角X（縦方向）', linestyle='--')
-    # ax[0].set_title('傾斜角X（縦方向）')
-    # ax[0].legend()
-
-    # ax[1].plot(df['日付'], y_Y, label='Actual 傾斜角Y（横方向）')
-    # ax[1].plot(df['日付'], y_Y_pred, label='Predicted 傾斜角Y（横方向）', linestyle='--')
-    # ax[1].set_title('傾斜角Y（横方向）')
-    # ax[1].legend()
-
     
-    ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X')
+    ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
+    ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
     ax[0].set_title('X')
     ax[0].legend()
 
+    ax[0].plot(df['日付'], df['傾斜角Y（横方向）'], label='Corrected Y', linestyle='--')
     ax[1].plot(df['日付'], df['Predicted_Y'], label='Corrected Y')
     ax[1].set_title('Y')
     ax[1].legend()
