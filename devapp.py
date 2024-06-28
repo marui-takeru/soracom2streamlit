@@ -25,6 +25,8 @@ url07 = st.secrets.APIs.url07
 url08 = st.secrets.APIs.url08
 url09 = st.secrets.APIs.url09
 url10 = st.secrets.APIs.url10
+url11 = st.secrets.APIs.url11
+url12 = st.secrets.APIs.url12
 
 # Streamlit app
 st.title('【試行段階】　堂野窪傾斜計')
@@ -88,6 +90,8 @@ url_display_names = {
     "８：横之地": url08,
     "９：集会所上": url09,
     "１０：ヒラノジ": url10
+    "１１：予備１": url11,
+    "１２：予備２": url12
 }
 
 # Select a URL using a dropdown
