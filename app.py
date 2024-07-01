@@ -262,17 +262,6 @@ if response.status_code == 200:
     else:
         background_color = '#ffffff'  # Default white
 
-    # background_color_css = f"""
-
-
-    # <style>
-    #     .stApp {{
-    #         background-color: {background_color};
-    #     }}
-    # </style>
-    # """
-    # st.markdown(background_color_css, unsafe_allow_html=True)
-
     # 累積変化の計算
     df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
     
