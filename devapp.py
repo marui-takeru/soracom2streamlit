@@ -8,12 +8,23 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 
+# HTML形式でデータフレームを表示するための関数
+def color_diff(val):
+    color = ''
+    if 0 < abs(val) < 0.01:
+        color = 'background-color: green'
+    elif 0.01 <= abs(val) < 0.05:
+        color = 'background-color: yellow'
+    elif 0.05 <= abs(val) < 0.1:
+        color = 'background-color: red'
+    return color
+
 # Define the CSS for the background color
 background_color_css = """
 <style>
-    .stApp {
-        background-color: #f0f0f5; /* ここで背景色を設定します。色を変更してください。 */
-    }
+    .stApp {{
+        background-color: {color}; /* ここで背景色を設定します。色を変更してください。 */
+    }}
 </style>
 """
 
@@ -112,22 +123,6 @@ selected_url = url_display_names[selected_display_name]
 
 # Fetch data for the selected URL
 response = requests.get(selected_url, headers=headers, params=params)
-
-# HTML形式でデータフレームを表示するための関数
-def color_diff(val):
-    color = ''
-    if 0 < abs(val) < 0.01:
-        color = 'background-color: green'
-    elif 0.01 <= abs(val) < 0.05:
-        color = 'background-color: yellow'
-    elif 0.05 <= abs(val) < 0.1:
-        color = 'background-color: red'
-    return color
-
-# DataFrameをHTMLに変換する
-def style_dataframe(df):
-    styled_df = df.style.applymap(lambda x: color_diff(x), subset=['Diff_X'])
-    return styled_df
 
 if response.status_code == 200:
     data = response.json()
