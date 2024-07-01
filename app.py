@@ -46,21 +46,18 @@ selected_week = st.selectbox('閲覧したい週を選んでください', ['今
 current_time = datetime.datetime.now()
 
 # 直近の過去7日分のデータを取得するための設定
-if selected_week == '今週':
+if selected_week == '過去7日分':
     date_end = current_time  # 現在の日付
-    date_start = current_time - datetime.timedelta(days=current_time.weekday() + 1)  # 今週の月曜日の日付
-elif selected_week == '先週':
-    date_end = current_time - datetime.timedelta(days=current_time.weekday() + 1)  # 先週の月曜日の日付
-    date_start = date_end - datetime.timedelta(days=7)  # 先週の月曜日から7日前の日付
-elif selected_week == '2週間前':
-    date_end = current_time - datetime.timedelta(days=current_time.weekday() + 1)  # 2週間前の月曜日の日付
-    date_start = date_end - datetime.timedelta(days=7)  # 2週間前の月曜日から7日前の日付
-elif selected_week == '3週間前':
-    date_end = current_time - datetime.timedelta(days=current_time.weekday() + 1)  # 3週間前の月曜日の日付
-    date_start = date_end - datetime.timedelta(days=7)  # 3週間前の月曜日から7日前の日付
-else:  # デフォルトは直近の過去7日分
-    date_end = current_time  # 現在の日付
-    date_start = current_time - datetime.timedelta(days=7)  # 7日前の日付
+    date_start = current_time - datetime.timedelta(days=7)  # 今週の月曜日の日付
+elif selected_week == '14日前-7日前':
+    date_end = current_time - datetime.timedelta(days=7)  # 先週の月曜日の日付
+    date_start = date_end - datetime.timedelta(days=14)  # 先週の月曜日から7日前の日付
+elif selected_week == '21日前-14日前':
+    date_end = current_time - datetime.timedelta(days=21)  # 2週間前の月曜日の日付
+    date_start = date_end - datetime.timedelta(days=28)  # 2週間前の月曜日から7日前の日付
+elif selected_week == '28日前-21日前':
+    date_end = current_time - datetime.timedelta(days=28)  # 3週間前の月曜日の日付
+    date_start = date_end - datetime.timedelta(days=35)  # 3週間前の月曜日から7日前の日付
 
 # Set the start and end date times
 date_start = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
