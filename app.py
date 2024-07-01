@@ -67,16 +67,16 @@ params = {
 
 # Define URLs
 url_display_names = {
-    "１：上田宅上": url01,
-    "２：井上宅上": url02,
+    # "１：上田宅上": url01,
+    # "２：井上宅上": url02,
     "３：名古谷1": url03,
     "４：久保田宅上": url04,
-    "５：泉谷": url05,
-    "６：清水宅上": url06,
-    "７：名古谷2": url07,
-    "８：横之地": url08,
-    "９：集会所上": url09,
-    "１０：ヒラノジ": url10
+    # "５：泉谷": url05,
+    # "６：清水宅上": url06,
+    # "７：名古谷2": url07,
+    # "８：横之地": url08,
+    # "９：集会所上": url09,
+    # "１０：ヒラノジ": url10
 }
 
 # Convert to numeric with a threshold function
