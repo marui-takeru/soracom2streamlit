@@ -79,9 +79,12 @@ url_display_names = {
     "１０：ヒラノジ": url10
 }
 
-# すべての URL でデータ取得と処理を実行
-for display_name, url in url_display_names.items():
-    # データ取得
+# サブプロットの設定
+fig, axes = plt.subplots(nrows=10, ncols=1, figsize=(12, 40), sharex=True, sharey=True)
+fig.subplots_adjust(hspace=0.5)  # グラフ間の垂直スペースを調整
+
+# 各センサのデータ取得と処理
+for idx, (display_name, url) in enumerate(url_display_names.items()):
     response = requests.get(url, headers=headers, params=params)
     
     if response.status_code == 200:
@@ -124,6 +127,35 @@ for display_name, url in url_display_names.items():
         
         # Diff_Xの最新値を取得
         latest_diff_x = df['Diff_X'].iloc[-1]
+        
+        # 背景色の設定
+        if 0 <= abs(latest_diff_x) < 0.01:
+            background_color = '#ccffcc'  # Green
+        elif 0.01 <= abs(latest_diff_x) < 0.05:
+            background_color = '#ffff99'  # Yellow
+        elif 0.05 <= abs(latest_diff_x) < 0.1:
+            background_color = '#ff9999'  # Red
+        else:
+            background_color = '#ffffff'  # Default white
+        
+        # 累積変化の計算
+        df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
+        
+        # 各センサのグラフのプロット
+        ax = axes[idx]
+        ax.set_facecolor(background_color)
+        ax.plot(df['日付'], df['Diff_X'], label=f'{display_name} - Sabun', color='black')
+        ax.set_title(f'{display_name} - Kakudo Henka')
+        ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
+        ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
+        ax.legend()
+        ax.set_ylim(-0.2, 0.2)  # 縦軸のレンジを -0.2 から 0.2 までで固定
+        
+    else:
+        st.error(f"{display_name} のデータ取得に失敗しました。ステータスコード: {response.status_code}")
+
+# グラフを Streamlit で表示
+st.pyplot(fig)
 
 # # Select a URL using a dropdown
 # selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
