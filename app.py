@@ -199,7 +199,7 @@ if response.status_code == 200:
     fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
     
     # '日付' を x 軸、'Diff_X' を y 軸にプロット
-    ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='red')
+    ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
     ax.set_title('Kakudo Henka')
     ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
     ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
@@ -207,6 +207,10 @@ if response.status_code == 200:
 
     # 縦軸のレンジを -0.2 から 0.2 までで固定
     ax.set_ylim(-0.2, 0.2)
+
+    # 波線の描画
+    line = Line2D([df['日付'].iloc[0], df['日付'].iloc[-1]], [0.05, 0.05], color='blue', linestyle='--', linewidth=1.5)
+    ax.add_line(line)
     
     # Streamlit でグラフを表示
     st.pyplot(fig)
