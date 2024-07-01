@@ -198,11 +198,11 @@ print(len(url_display_names))
 #         ax.set_xticks([])
 #         ax.set_yticks([])
 
-# Improve the layout
-fig.tight_layout()
+# # Improve the layout
+# fig.tight_layout()
 
-# Show the plot
-st.pyplot(fig)
+# # Show the plot
+# st.pyplot(fig)
 
 # # Select a URL using a dropdown
 # selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
