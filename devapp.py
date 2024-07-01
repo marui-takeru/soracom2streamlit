@@ -3,36 +3,11 @@ import pandas as pd
 import json
 import requests
 import datetime
-import base64
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 
-# HTML形式でデータフレームを表示するための関数
-def color_diff(val):
-    color = ''
-    if 0 < abs(val) < 0.01:
-        color = '#f0f0f5'
-    elif 0.01 <= abs(val) < 0.05:
-        color = '#f9f9f9'
-    elif 0.05 <= abs(val) < 0.1:
-        color = '#ffffff'
-    return color
-
-# Define the CSS for the background color
-background_color_css = """
-<style>
-    .stApp {{
-        background-color: {color}; /* ここで背景色を設定します。色を変更してください。 */
-    }}
-</style>
-"""
-
-# Apply the CSS
-st.markdown(background_color_css, unsafe_allow_html=True)
-
 # APIの認証情報を環境変数から取得
-# Streamlit community cloudの「secrets」からSoracomAPIを取得
 api_username = st.secrets.APIs.api_username
 api_password = st.secrets.APIs.api_password
 api_email = st.secrets.APIs.api_email
@@ -124,6 +99,22 @@ selected_url = url_display_names[selected_display_name]
 # Fetch data for the selected URL
 response = requests.get(selected_url, headers=headers, params=params)
 
+# HTML形式でデータフレームを表示するための関数
+def color_diff(val):
+    color = ''
+    if 0 < abs(val) < 0.01:
+        color = 'background-color: green'
+    elif 0.01 <= abs(val) < 0.05:
+        color = 'background-color: yellow'
+    elif 0.05 <= abs(val) < 0.1:
+        color = 'background-color: red'
+    return color
+
+# DataFrameをHTMLに変換する
+def style_dataframe(df):
+    styled_df = df.style.applymap(lambda x: color_diff(x), subset=['Diff_X'])
+    return styled_df
+
 if response.status_code == 200:
     data = response.json()
 
@@ -191,13 +182,31 @@ if response.status_code == 200:
 
     # 前回の値との差分を計算して新しい列を追加
     df['Diff_X'] = df['Predicted_X'].diff()
-    color_diff(df['Diff_X'])
 
-    # Diff_Xの最大値を計算
-    max_diff_x = df['Diff_X'].max()
-    # 最大値を出力
-    st.write(f'Diff_Xの最大値：{max_diff_x}')
-    
+    # Diff_Xの最新値を取得
+    latest_diff_x = df['Diff_X'].iloc[-1]
+
+    # 背景色の設定
+    if 0 < abs(latest_diff_x) < 0.01:
+        background_color = '#ccffcc'  # Green
+    elif 0.01 <= abs(latest_diff_x) < 0.05:
+        background_color = '#ffff99'  # Yellow
+    elif 0.05 <= abs(latest_diff_x) < 0.1:
+        background_color = '#ff9999'  # Red
+    else:
+        background_color = '#ffffff'  # Default white
+
+    background_color_css = f"""
+
+
+    <style>
+        .stApp {{
+            background-color: {background_color};
+        }}
+    </style>
+    """
+    st.markdown(background_color_css, unsafe_allow_html=True)
+
     # 累積変化の計算
     df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
     
@@ -222,7 +231,7 @@ if response.status_code == 200:
     ax[3].legend()
 
     st.pyplot(fig)
-    
-    # Display error message if data fetching failed
+
+# Display error message if data fetching failed
 if response.status_code != 200:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
