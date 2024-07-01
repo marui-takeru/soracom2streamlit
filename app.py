@@ -119,8 +119,8 @@ if response.status_code == 200:
 
     # Convert columns to appropriate data types
     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-    df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
-    df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
+    df['傾斜角X（縦方向）'] = pd.to_numeric(df['傾斜角X'])
+    df['傾斜角Y（横方向）'] = pd.to_numeric(df['傾斜角Y'])
     df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
     df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
