@@ -177,7 +177,7 @@ if response.status_code == 200:
     # '日付' を x 軸、'Diff_X' を y 軸にプロット
     ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
     ax.set_title('Kakudo Henka')
-    ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
+    ax.set_xlabel('YYYY-MM-DD')  # x 軸のラベルを設定
     ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
     ax.legend()
 
