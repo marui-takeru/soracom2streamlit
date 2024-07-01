@@ -130,6 +130,7 @@ if response.status_code == 200:
 
     # データ数の表示
     num_samples = len(df)
+    st.write(f'使用されたデータ数：{num_samples}個')
     
     # 平均気温の計算
     Tave = df['気温'].mean()
