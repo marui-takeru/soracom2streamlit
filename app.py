@@ -79,6 +79,14 @@ url_display_names = {
     "１０：ヒラノジ": url10
 }
 
+# Convert to numeric with a threshold function
+def convert_to_numeric_with_threshold(value, prev_value):
+    if prev_value is None:
+        return pd.to_numeric(value, errors='coerce'), value
+    if abs(float(value) - float(prev_value)) >= 3:
+        return float('NaN'), prev_value
+    return pd.to_numeric(value, errors='coerce'), value
+
 # サブプロットの設定
 fig, axes = plt.subplots(nrows=10, ncols=1, figsize=(12, 40), sharex=True, sharey=True)
 fig.subplots_adjust(hspace=0.5)  # グラフ間の垂直スペースを調整
