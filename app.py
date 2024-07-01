@@ -190,25 +190,12 @@ if response.status_code == 200:
     df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
     
     # グラフのプロット
-    fig, ax = plt.subplots(4, 1, figsize=(10, 20))
+    fig, ax = plt.subplots(1, 1, figsize=(10, 20))
     
-    ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
-    ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
-    ax[0].set_title('Value X')
+    ax[0].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
+    ax[0].set_title('Difference X')
     ax[0].legend()
-
-    ax[1].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
-    ax[1].set_title('Difference X')
-    ax[1].legend()
     
-    ax[2].plot(df['日付'], df['Cumulative_Diff_X'], label='Cumulative Diff X', color='green')
-    ax[2].set_title('Cumulative Difference X')
-    ax[2].legend()
-
-    ax[3].plot(df['日付'], df['気温'], label='Temperature')
-    ax[3].set_title('Temperature')
-    ax[3].legend()
-
     st.pyplot(fig)
 
 # Display error message if data fetching failed
