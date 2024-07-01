@@ -12,11 +12,11 @@ import streamlit.components.v1 as components
 def color_diff(val):
     color = ''
     if 0 < abs(val) < 0.01:
-        color = 'background-color: green'
+        color = '#f0f0f5'
     elif 0.01 <= abs(val) < 0.05:
-        color = 'background-color: yellow'
+        color = '#f9f9f9'
     elif 0.05 <= abs(val) < 0.1:
-        color = 'background-color: red'
+        color = '#ffffff'
     return color
 
 # Define the CSS for the background color
