@@ -101,18 +101,18 @@ if response.status_code == 200:
 
     # 前回の値を保持するための変数
     prev_value = None
-    
+
     def convert_to_numeric_with_threshold(value):
         global prev_value
         # 前回の値が存在しない場合はそのまま数値に変換
         if prev_value is None:
             prev_value = value
             return pd.to_numeric(value, errors='coerce')
-    
+
         # 前回の値との差が3度以上の場合はNaNを返す
         if abs(float(value) - float(prev_value)) >= 3:
             return float('NaN')
-    
+
         # 差が3度未満の場合はそのまま数値に変換
         prev_value = value
         return pd.to_numeric(value, errors='coerce')
@@ -132,17 +132,17 @@ if response.status_code == 200:
 
     # データ数の表示
     num_samples = len(df)
-    
+
     # 平均気温の計算
     Tave = df['気温'].mean()
 
     # 選択した期間内のデータを使用して単回帰分析を行う
     X = df['気温'].values.reshape(-1, 1)
     y = df['傾斜角X（縦方向）'].values
-    
+
     # 線形回帰モデルを構築
     reg = LinearRegression().fit(X, y)
-    
+
     # 回帰係数を取得
     reg_coef = reg.coef_[0]
 
@@ -167,13 +167,13 @@ if response.status_code == 200:
 
     # 累積変化の計算
     df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
-    
+
     # グラフのプロット
     fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
 
     # Set the background color of the figure
     ax.set_facecolor(background_color)
-    
+
     # '日付' を x 軸、'Diff_X' を y 軸にプロット
     ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
     ax.set_title('Kakudo Henka')
@@ -183,7 +183,7 @@ if response.status_code == 200:
 
     # 縦軸のレンジを -0.2 から 0.2 までで固定
     ax.set_ylim(-0.2, 0.2)
-    
+
     # Streamlit でグラフを表示
     st.pyplot(fig)
 
