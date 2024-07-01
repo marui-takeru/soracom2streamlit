@@ -41,6 +41,8 @@ auth_response = response.json()
 api_key = auth_response['apiKey']
 api_token = auth_response['token']
 
+# Calculate the time range based on the selected option
+current_time = datetime.datetime.now()
 date_end = current_time  # 現在の日付
 date_start = current_time - datetime.timedelta(days=7)  # 今週の月曜日の日付
 
