@@ -8,6 +8,18 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 
+# Define the CSS for the background color
+background_color_css = """
+<style>
+    .stApp {
+        background-color: #f0f0f5; /* ここで背景色を設定します。色を変更してください。 */
+    }
+</style>
+"""
+
+# Apply the CSS
+st.markdown(background_color_css, unsafe_allow_html=True)
+
 # APIの認証情報を環境変数から取得
 # Streamlit community cloudの「secrets」からSoracomAPIを取得
 api_username = st.secrets.APIs.api_username
