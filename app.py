@@ -79,81 +79,126 @@ url_display_names = {
     "１０：ヒラノジ": url10
 }
 
+# すべての URL でデータ取得と処理を実行
+for display_name, url in url_display_names.items():
+    # データ取得
+    response = requests.get(url, headers=headers, params=params)
+    
+    if response.status_code == 200:
+        data = response.json()
+        
+        # データフレームの作成
+        inclination = [item['content'].split(',') for item in data]
+        df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
+        
+        # データ型の変換
+        df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
+        df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
+        df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
+        df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
+        df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
+        df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
+        df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
+        df = df.dropna()
+        
+        # データ数の表示
+        num_samples = len(df)
+        st.write(f"{display_name} のデータ数: {num_samples}")
+        
+        # 平均気温の計算
+        Tave = df['気温'].mean()
+        
+        # 線形回帰モデルの構築
+        X = df[['気温']].values  # X は 2D の配列でなければならない
+        y = df['傾斜角X（縦方向）'].values
+        
+        # 線形回帰の実行
+        reg = LinearRegression().fit(X, y)
+        reg_coef = reg.coef_[0]
+        
+        # データの修正
+        df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+        
+        # 前回の値との差分を計算
+        df['Diff_X'] = df['Predicted_X'].diff()
+        
+        # Diff_Xの最新値を取得
+        latest_diff_x = df['Diff_X'].iloc[-1]
 
-# Select a URL using a dropdown
-selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
-selected_url = url_display_names[selected_display_name]
+# # Select a URL using a dropdown
+# selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
+# selected_url = url_display_names[selected_display_name]
 
-# Fetch data for the selected URL
-response = requests.get(selected_url, headers=headers, params=params)
+# # Fetch data for the selected URL
+# response = requests.get(selected_url, headers=headers, params=params)
 
-if response.status_code == 200:
-    data = response.json()
+# if response.status_code == 200:
+#     data = response.json()
 
-    # Create DataFrame
-    inclination = []
-    for i in range(len(data)):
-        inclination.append(data[i]['content'])
+#     # Create DataFrame
+#     inclination = []
+#     for i in range(len(data)):
+#         inclination.append(data[i]['content'])
 
-    for i in range(len(inclination)):
-        tmp = inclination[i].split(sep=',')
-        inclination[i] = tmp
+#     for i in range(len(inclination)):
+#         tmp = inclination[i].split(sep=',')
+#         inclination[i] = tmp
 
-    # 前回の値を保持するための変数
-    prev_value = None
+#     # 前回の値を保持するための変数
+#     prev_value = None
 
-    def convert_to_numeric_with_threshold(value):
-        global prev_value
-        # 前回の値が存在しない場合はそのまま数値に変換
-        if prev_value is None:
-            prev_value = value
-            return pd.to_numeric(value, errors='coerce')
+#     def convert_to_numeric_with_threshold(value):
+#         global prev_value
+#         # 前回の値が存在しない場合はそのまま数値に変換
+#         if prev_value is None:
+#             prev_value = value
+#             return pd.to_numeric(value, errors='coerce')
 
-        # 前回の値との差が3度以上の場合はNaNを返す
-        if abs(float(value) - float(prev_value)) >= 3:
-            return float('NaN')
+#         # 前回の値との差が3度以上の場合はNaNを返す
+#         if abs(float(value) - float(prev_value)) >= 3:
+#             return float('NaN')
 
-        # 差が3度未満の場合はそのまま数値に変換
-        prev_value = value
-        return pd.to_numeric(value, errors='coerce')
+#         # 差が3度未満の場合はそのまま数値に変換
+#         prev_value = value
+#         return pd.to_numeric(value, errors='coerce')
 
-    df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
+#     df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
 
-    # Convert columns to appropriate data types
-    df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-    df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
-    df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
-    df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
-    df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
-    df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
-    df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
-    # NaNを含む行を削除する
-    df = df.dropna()
+#     # Convert columns to appropriate data types
+#     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
+#     df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
+#     df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
+#     df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
+#     df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
+#     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
+#     df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
+#     # NaNを含む行を削除する
+#     df = df.dropna()
 
-    # データ数の表示
-    num_samples = len(df)
+#     # データ数の表示
+#     num_samples = len(df)
 
-    # 平均気温の計算
-    Tave = df['気温'].mean()
+#     # 平均気温の計算
+#     Tave = df['気温'].mean()
 
-    # 選択した期間内のデータを使用して単回帰分析を行う
-    X = df['気温'].values.reshape(-1, 1)
-    y = df['傾斜角X（縦方向）'].values
+#     # 選択した期間内のデータを使用して単回帰分析を行う
+#     X = df['気温'].values.reshape(-1, 1)
+#     y = df['傾斜角X（縦方向）'].values
 
-    # 線形回帰モデルを構築
-    reg = LinearRegression().fit(X, y)
+#     # 線形回帰モデルを構築
+#     reg = LinearRegression().fit(X, y)
 
-    # 回帰係数を取得
-    reg_coef = reg.coef_[0]
+#     # 回帰係数を取得
+#     reg_coef = reg.coef_[0]
 
-    # データの修正
-    df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+#     # データの修正
+#     df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
 
-    # 前回の値との差分を計算して新しい列を追加
-    df['Diff_X'] = df['Predicted_X'].diff()
+#     # 前回の値との差分を計算して新しい列を追加
+#     df['Diff_X'] = df['Predicted_X'].diff()
 
-    # Diff_Xの最新値を取得
-    latest_diff_x = df['Diff_X'].iloc[-1]
+#     # Diff_Xの最新値を取得
+#     latest_diff_x = df['Diff_X'].iloc[-1]
 
     # 背景色の設定
     if 0 <= abs(latest_diff_x) < 0.01:
