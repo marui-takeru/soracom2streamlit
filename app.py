@@ -152,6 +152,9 @@ if response.status_code == 200:
     # 前回の値との差分を計算して新しい列を追加
     df['Diff_X'] = df['Predicted_X'].diff()
 
+    # Diff_Xの最新値を取得
+    latest_diff_x = df['Diff_X'].iloc[-1]
+
     # 背景色の設定
     if 0 <= abs(latest_diff_x) < 0.01:
         background_color = '#ccffcc'  # Green
@@ -161,6 +164,9 @@ if response.status_code == 200:
         background_color = '#ff9999'  # Red
     else:
         background_color = '#ffffff'  # Default white
+
+    # 累積変化の計算
+    df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
 
     # グラフのプロット
     fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
