@@ -197,6 +197,9 @@ if response.status_code == 200:
     ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
     ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
     ax.legend()
+
+    # 縦軸のレンジを -0.2 から 0.2 までで固定
+    ax.set_ylim(-0.2, 0.2)
     
     # Streamlit でグラフを表示
     st.pyplot(fig)
