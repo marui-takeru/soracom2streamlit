@@ -179,27 +179,27 @@ for display_name, url in url_display_names.items():
         else:
             background_color = '#ffffff'  # Default white
 
-        # 累積変化の計算
-        df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
+        # # 累積変化の計算
+        # df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
         
-        # グラフのプロット
-        fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
+        # # グラフのプロット
+        # fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
 
-        # Set the background color of the figure
-        ax.set_facecolor(background_color)
+        # # Set the background color of the figure
+        # ax.set_facecolor(background_color)
         
-        # '日付' を x 軸、'Diff_X' を y 軸にプロット
-        ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
-        ax.set_title(f'{display_name} - Kakudo Henka')
-        ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
-        ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
-        ax.legend()
+        # # '日付' を x 軸、'Diff_X' を y 軸にプロット
+        # ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
+        # ax.set_title(f'{display_name} - Kakudo Henka')
+        # ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
+        # ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
+        # ax.legend()
 
-        # 縦軸のレンジを -0.2 から 0.2 までで固定
-        ax.set_ylim(-0.2, 0.2)
+        # # 縦軸のレンジを -0.2 から 0.2 までで固定
+        # ax.set_ylim(-0.2, 0.2)
         
-        # Streamlit でグラフを表示
-        st.pyplot(fig)
+        # # Streamlit でグラフを表示
+        # st.pyplot(fig)
 
     # Display error message if data fetching failed
     else:
