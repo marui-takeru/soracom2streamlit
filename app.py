@@ -207,10 +207,6 @@ if response.status_code == 200:
 
     # 縦軸のレンジを -0.2 から 0.2 までで固定
     ax.set_ylim(-0.2, 0.2)
-
-    # 波線の描画
-    line = Line2D([df['日付'].iloc[0], df['日付'].iloc[-1]], [0.05, 0.05], color='blue', linestyle='--', linewidth=1.5)
-    ax.add_line(line)
     
     # Streamlit でグラフを表示
     st.pyplot(fig)
