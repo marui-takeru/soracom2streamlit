@@ -170,10 +170,6 @@ for i, (display_name, df) in enumerate(all_data):
     axs[i].set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
     axs[i].legend()
     axs[i].set_ylim(-0.2, 0.2)  # 縦軸のレンジを -0.2 から 0.2 までで固定
-    
-    # Draw a horizontal line at y=0.05
-    axs[i].axhline(y=0.05, color='blue', linestyle='--', linewidth=1.5, label='0.05 Level')
-    axs[i].legend()
 
 # Adjust layout
 plt.tight_layout()
