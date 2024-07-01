@@ -101,6 +101,23 @@ selected_url = url_display_names[selected_display_name]
 # Fetch data for the selected URL
 response = requests.get(selected_url, headers=headers, params=params)
 
+# HTML形式でデータフレームを表示するための関数
+def color_diff(val):
+    color = ''
+    if 0 < abs(val) < 0.01:
+        color = 'background-color: green'
+    elif 0.01 <= abs(val) < 0.05:
+        color = 'background-color: yellow'
+    elif 0.05 <= abs(val) < 0.1:
+        color = 'background-color: red'
+    return color
+
+
+# DataFrameをHTMLに変換する
+def style_dataframe(df):
+    styled_df = df.style.applymap(lambda x: color_diff(x), subset=['Diff_X'])
+    return styled_df
+
 if response.status_code == 200:
     data = response.json()
 
@@ -168,6 +185,10 @@ if response.status_code == 200:
 
     # 前回の値との差分を計算して新しい列を追加
     df['Diff_X'] = df['Predicted_X'].diff()
+
+    # データフレームを表示
+    styled_df = style_dataframe(df)
+    st.write(styled_df.to_html(), unsafe_allow_html=True)
 
     # Diff_Xの最大値を計算
     max_diff_x = df['Diff_X'].max()
