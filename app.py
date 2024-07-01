@@ -141,7 +141,6 @@ if response.status_code == 200:
 
     # データ数の表示
     num_samples = len(df)
-    st.write(f'使用されたデータ数：{num_samples}個')
     
     # 平均気温の計算
     Tave = df['気温'].mean()
@@ -190,12 +189,16 @@ if response.status_code == 200:
     df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
     
     # グラフのプロット
-    fig, ax = plt.subplots(1, 1, figsize=(10, 20))
+    fig, ax = plt.subplots(figsize=(10, 20))  # 1x1のサブプロットを作成
     
-    ax[0].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
-    ax[0].set_title('Difference X')
-    ax[0].legend()
+    # '日付' を x 軸、'Diff_X' を y 軸にプロット
+    ax.plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
+    ax.set_title('Difference X')
+    ax.set_xlabel('日付')  # x 軸のラベルを設定
+    ax.set_ylabel('Diff X')  # y 軸のラベルを設定
+    ax.legend()
     
+    # Streamlit でグラフを表示
     st.pyplot(fig)
 
 # Display error message if data fetching failed
