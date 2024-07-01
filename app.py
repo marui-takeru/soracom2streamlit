@@ -232,38 +232,38 @@ st.pyplot(fig)
 #     # Diff_Xの最新値を取得
 #     latest_diff_x = df['Diff_X'].iloc[-1]
 
-    # 背景色の設定
-    if 0 <= abs(latest_diff_x) < 0.01:
-        background_color = '#ccffcc'  # Green
-    elif 0.01 <= abs(latest_diff_x) < 0.05:
-        background_color = '#ffff99'  # Yellow
-    elif 0.05 <= abs(latest_diff_x) < 0.1:
-        background_color = '#ff9999'  # Red
-    else:
-        background_color = '#ffffff'  # Default white
+#     # 背景色の設定
+#     if 0 <= abs(latest_diff_x) < 0.01:
+#         background_color = '#ccffcc'  # Green
+#     elif 0.01 <= abs(latest_diff_x) < 0.05:
+#         background_color = '#ffff99'  # Yellow
+#     elif 0.05 <= abs(latest_diff_x) < 0.1:
+#         background_color = '#ff9999'  # Red
+#     else:
+#         background_color = '#ffffff'  # Default white
 
-    # 累積変化の計算
-    df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
+#     # 累積変化の計算
+#     df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
 
-    # グラフのプロット
-    fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
+#     # グラフのプロット
+#     fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
 
-    # Set the background color of the figure
-    ax.set_facecolor(background_color)
+#     # Set the background color of the figure
+#     ax.set_facecolor(background_color)
 
-    # '日付' を x 軸、'Diff_X' を y 軸にプロット
-    ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
-    ax.set_title('Kakudo Henka')
-    ax.set_xlabel('YYYY-MM-DD')  # x 軸のラベルを設定
-    ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
-    ax.legend()
+#     # '日付' を x 軸、'Diff_X' を y 軸にプロット
+#     ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
+#     ax.set_title('Kakudo Henka')
+#     ax.set_xlabel('YYYY-MM-DD')  # x 軸のラベルを設定
+#     ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
+#     ax.legend()
 
-    # 縦軸のレンジを -0.2 から 0.2 までで固定
-    ax.set_ylim(-0.2, 0.2)
+#     # 縦軸のレンジを -0.2 から 0.2 までで固定
+#     ax.set_ylim(-0.2, 0.2)
 
-    # Streamlit でグラフを表示
-    st.pyplot(fig)
+#     # Streamlit でグラフを表示
+#     st.pyplot(fig)
 
-# Display error message if data fetching failed
-if response.status_code != 200:
-    st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
+# # Display error message if data fetching failed
+# if response.status_code != 200:
+#     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
