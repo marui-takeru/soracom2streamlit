@@ -163,9 +163,6 @@ if response.status_code == 200:
         background_color = '#ff9999'  # Red
     else:
         background_color = '#ffffff'  # Default white
-
-    # 累積変化の計算
-    df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
     
     # グラフのプロット
     fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
