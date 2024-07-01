@@ -41,20 +41,8 @@ auth_response = response.json()
 api_key = auth_response['apiKey']
 api_token = auth_response['token']
 
-# Allow users to select the time range
-selected_week = st.selectbox('閲覧したい週を選んでください', ['今週', '先週', '2週間前', '3週間前'])
-
-# Calculate the time range based on the selected option
-current_time = datetime.datetime.now()
-
-if selected_week == '今週':
-    date_start = current_time - datetime.timedelta(days=current_time.weekday())
-elif selected_week == '先週':
-    date_start = current_time - datetime.timedelta(days=current_time.weekday() + 7)
-elif selected_week == '2週間前':
-    date_start = current_time - datetime.timedelta(days=current_time.weekday() + 14)
-elif selected_week == '3週間前':
-    date_start = current_time - datetime.timedelta(days=current_time.weekday() + 21)
+date_end = current_time  # 現在の日付
+date_start = current_time - datetime.timedelta(days=7)  # 今週の月曜日の日付
 
 # Set the start and end date times
 date_start = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
