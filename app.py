@@ -65,7 +65,6 @@ params = {
     'to': unix_timestamp_ms_end
 }
 
-print('OK')
 # Define URLs
 url_display_names = {
     "１：上田宅上": url01,
@@ -80,7 +79,7 @@ url_display_names = {
     "１０：ヒラノジ": url10
 }
 
-print(url_display_names)
+
 # # Create a figure with subplots for all sensors
 # fig, axs = plt.subplots(len(url_display_names), 1, figsize=(14, 5 * len(url_display_names)), sharex=True, squeeze=False)
 
@@ -205,113 +204,113 @@ print(url_display_names)
 # # Show the plot
 # st.pyplot(fig)
 
-# # Select a URL using a dropdown
-# selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
-# selected_url = url_display_names[selected_display_name]
+# Select a URL using a dropdown
+selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
+selected_url = url_display_names[selected_display_name]
 
-# # Fetch data for the selected URL
-# response = requests.get(selected_url, headers=headers, params=params)
+# Fetch data for the selected URL
+response = requests.get(selected_url, headers=headers, params=params)
 
-# if response.status_code == 200:
-#     data = response.json()
+if response.status_code == 200:
+    data = response.json()
 
-#     # Create DataFrame
-#     inclination = []
-#     for i in range(len(data)):
-#         inclination.append(data[i]['content'])
+    # Create DataFrame
+    inclination = []
+    for i in range(len(data)):
+        inclination.append(data[i]['content'])
 
-#     for i in range(len(inclination)):
-#         tmp = inclination[i].split(sep=',')
-#         inclination[i] = tmp
+    for i in range(len(inclination)):
+        tmp = inclination[i].split(sep=',')
+        inclination[i] = tmp
 
-#     # 前回の値を保持するための変数
-#     prev_value = None
+    # 前回の値を保持するための変数
+    prev_value = None
 
-#     def convert_to_numeric_with_threshold(value):
-#         global prev_value
-#         # 前回の値が存在しない場合はそのまま数値に変換
-#         if prev_value is None:
-#             prev_value = value
-#             return pd.to_numeric(value, errors='coerce')
+    def convert_to_numeric_with_threshold(value):
+        global prev_value
+        # 前回の値が存在しない場合はそのまま数値に変換
+        if prev_value is None:
+            prev_value = value
+            return pd.to_numeric(value, errors='coerce')
 
-#         # 前回の値との差が3度以上の場合はNaNを返す
-#         if abs(float(value) - float(prev_value)) >= 3:
-#             return float('NaN')
+        # 前回の値との差が3度以上の場合はNaNを返す
+        if abs(float(value) - float(prev_value)) >= 3:
+            return float('NaN')
 
-#         # 差が3度未満の場合はそのまま数値に変換
-#         prev_value = value
-#         return pd.to_numeric(value, errors='coerce')
+        # 差が3度未満の場合はそのまま数値に変換
+        prev_value = value
+        return pd.to_numeric(value, errors='coerce')
 
-#     df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
+    df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
 
-#     # Convert columns to appropriate data types
-#     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-#     df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
-#     df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
-#     df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
-#     df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
-#     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
-#     df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
-#     # NaNを含む行を削除する
-#     df = df.dropna()
+    # Convert columns to appropriate data types
+    df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
+    df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
+    df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
+    df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
+    df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
+    df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
+    df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
+    # NaNを含む行を削除する
+    df = df.dropna()
 
-#     # データ数の表示
-#     num_samples = len(df)
+    # データ数の表示
+    num_samples = len(df)
 
-#     # 平均気温の計算
-#     Tave = df['気温'].mean()
+    # 平均気温の計算
+    Tave = df['気温'].mean()
 
-#     # 選択した期間内のデータを使用して単回帰分析を行う
-#     X = df['気温'].values.reshape(-1, 1)
-#     y = df['傾斜角X（縦方向）'].values
+    # 選択した期間内のデータを使用して単回帰分析を行う
+    X = df['気温'].values.reshape(-1, 1)
+    y = df['傾斜角X（縦方向）'].values
 
-#     # 線形回帰モデルを構築
-#     reg = LinearRegression().fit(X, y)
+    # 線形回帰モデルを構築
+    reg = LinearRegression().fit(X, y)
 
-#     # 回帰係数を取得
-#     reg_coef = reg.coef_[0]
+    # 回帰係数を取得
+    reg_coef = reg.coef_[0]
 
-#     # データの修正
-#     df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+    # データの修正
+    df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
 
-#     # 前回の値との差分を計算して新しい列を追加
-#     df['Diff_X'] = df['Predicted_X'].diff()
+    # 前回の値との差分を計算して新しい列を追加
+    df['Diff_X'] = df['Predicted_X'].diff()
 
-#     # Diff_Xの最新値を取得
-#     latest_diff_x = df['Diff_X'].iloc[-1]
+    # Diff_Xの最新値を取得
+    latest_diff_x = df['Diff_X'].iloc[-1]
 
-#     # 背景色の設定
-#     if 0 <= abs(latest_diff_x) < 0.01:
-#         background_color = '#ccffcc'  # Green
-#     elif 0.01 <= abs(latest_diff_x) < 0.05:
-#         background_color = '#ffff99'  # Yellow
-#     elif 0.05 <= abs(latest_diff_x) < 0.1:
-#         background_color = '#ff9999'  # Red
-#     else:
-#         background_color = '#ffffff'  # Default white
+    # 背景色の設定
+    if 0 <= abs(latest_diff_x) < 0.01:
+        background_color = '#ccffcc'  # Green
+    elif 0.01 <= abs(latest_diff_x) < 0.05:
+        background_color = '#ffff99'  # Yellow
+    elif 0.05 <= abs(latest_diff_x) < 0.1:
+        background_color = '#ff9999'  # Red
+    else:
+        background_color = '#ffffff'  # Default white
 
-#     # 累積変化の計算
-#     df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
+    # 累積変化の計算
+    df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
 
-#     # グラフのプロット
-#     fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
+    # グラフのプロット
+    fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
 
-#     # Set the background color of the figure
-#     ax.set_facecolor(background_color)
+    # Set the background color of the figure
+    ax.set_facecolor(background_color)
 
-#     # '日付' を x 軸、'Diff_X' を y 軸にプロット
-#     ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
-#     ax.set_title('Kakudo Henka')
-#     ax.set_xlabel('YYYY-MM-DD')  # x 軸のラベルを設定
-#     ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
-#     ax.legend()
+    # '日付' を x 軸、'Diff_X' を y 軸にプロット
+    ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
+    ax.set_title('Kakudo Henka')
+    ax.set_xlabel('YYYY-MM-DD')  # x 軸のラベルを設定
+    ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
+    ax.legend()
 
-#     # 縦軸のレンジを -0.2 から 0.2 までで固定
-#     ax.set_ylim(-0.2, 0.2)
+    # 縦軸のレンジを -0.2 から 0.2 までで固定
+    ax.set_ylim(-0.2, 0.2)
 
-#     # Streamlit でグラフを表示
-#     st.pyplot(fig)
+    # Streamlit でグラフを表示
+    st.pyplot(fig)
 
-# # Display error message if data fetching failed
-# if response.status_code != 200:
-#     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
+# Display error message if data fetching failed
+if response.status_code != 200:
+    st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
