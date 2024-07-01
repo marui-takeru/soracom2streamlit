@@ -280,7 +280,7 @@ if response.status_code == 200:
     fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
 
     # Set the background color of the figure
-    fig.patch.set_facecolor(background_color)
+    ax.set_facecolor(background_color)
     
     # '日付' を x 軸、'Diff_X' を y 軸にプロット
     ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
