@@ -262,22 +262,25 @@ if response.status_code == 200:
     else:
         background_color = '#ffffff'  # Default white
 
-    background_color_css = f"""
+    # background_color_css = f"""
 
 
-    <style>
-        .stApp {{
-            background-color: {background_color};
-        }}
-    </style>
-    """
-    st.markdown(background_color_css, unsafe_allow_html=True)
+    # <style>
+    #     .stApp {{
+    #         background-color: {background_color};
+    #     }}
+    # </style>
+    # """
+    # st.markdown(background_color_css, unsafe_allow_html=True)
 
     # 累積変化の計算
     df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
     
     # グラフのプロット
     fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
+
+    # Set the background color of the figure
+    fig.patch.set_facecolor(background_color)
     
     # '日付' を x 軸、'Diff_X' を y 軸にプロット
     ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
