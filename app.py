@@ -189,7 +189,7 @@ if response.status_code == 200:
     df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
     
     # グラフのプロット
-    fig, ax = plt.subplots(figsize=(10, 10))  # 1x1のサブプロットを作成
+    fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
     
     # '日付' を x 軸、'Diff_X' を y 軸にプロット
     ax.plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
