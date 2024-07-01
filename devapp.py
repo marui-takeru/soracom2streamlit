@@ -197,11 +197,6 @@ if response.status_code == 200:
     # 前回の値との差分を計算して新しい列を追加
     df['Diff_X'] = df['Predicted_X'].diff()
 
-    # データフレームを表示
-    styled_df = style_dataframe(df)
-    html = styled_df.to_html()
-    components.html(html, height=600, scrolling=True)
-
     # Diff_Xの最大値を計算
     max_diff_x = df['Diff_X'].max()
     # 最大値を出力
