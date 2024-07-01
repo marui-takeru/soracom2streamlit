@@ -43,7 +43,7 @@ api_token = auth_response['token']
 current_time = datetime.datetime.now()
 
 date_end = current_time  # 現在の日付
-date_start = current_time - datetime.timedelta(days=7)  # 今週の月曜日の日付
+date_start = current_time - datetime.timedelta(days=7)  # 7日前の日付
 
 # Set the start and end date times
 date_start = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -112,10 +112,6 @@ for idx, (display_name, url) in enumerate(url_display_names.items()):
         df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
         df = df.dropna()
         
-        # データ数の表示
-        num_samples = len(df)
-        st.write(f"{display_name} のデータ数: {num_samples}")
-        
         # 平均気温の計算
         Tave = df['気温'].mean()
         
@@ -145,9 +141,6 @@ for idx, (display_name, url) in enumerate(url_display_names.items()):
             background_color = '#ff9999'  # Red
         else:
             background_color = '#ffffff'  # Default white
-        
-        # 累積変化の計算
-        df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
         
         # 各センサのグラフのプロット
         ax = axes[idx]
