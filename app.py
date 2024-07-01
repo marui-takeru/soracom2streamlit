@@ -96,163 +96,64 @@ url_display_names = {
     "１０：ヒラノジ": url10
 }
 
-# Initialize a list to store data for all URLs
-all_data = []
+# # Initialize a list to store data for all URLs
+# all_data = []
 
-# Loop through each URL and fetch data
-for display_name, url in url_display_names.items():
-    response = requests.get(url, headers=headers, params=params)
+# # Loop through each URL and fetch data
+# for display_name, url in url_display_names.items():
+#     response = requests.get(url, headers=headers, params=params)
 
-    if response.status_code == 200:
-        data = response.json()
+#     if response.status_code == 200:
+#         data = response.json()
 
-        # Create DataFrame
-        inclination = []
-        for i in range(len(data)):
-            inclination.append(data[i]['content'])
+#         # Create DataFrame
+#         inclination = []
+#         for i in range(len(data)):
+#             inclination.append(data[i]['content'])
 
-        for i in range(len(inclination)):
-            tmp = inclination[i].split(sep=',')
-            inclination[i] = tmp
+#         for i in range(len(inclination)):
+#             tmp = inclination[i].split(sep=',')
+#             inclination[i] = tmp
 
-        # Convert to DataFrame
-        df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
+#         # Convert to DataFrame
+#         df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
 
-        # Convert columns to appropriate data types
-        df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-        df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
-        df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
-        df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
-        df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
-        df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
-        df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
-        df = df.dropna()
+#         # Convert columns to appropriate data types
+#         df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
+#         df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
+#         df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
+#         df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
+#         df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
+#         df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
+#         df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
+#         df = df.dropna()
 
-        # Calculate average temperature
-        Tave = df['気温'].mean()
+#         # Calculate average temperature
+#         Tave = df['気温'].mean()
 
-        # Perform linear regression
-        X = df['気温'].values.reshape(-1, 1)
-        y = df['傾斜角X（縦方向）'].values
-        reg = LinearRegression().fit(X, y)
-        reg_coef = reg.coef_[0]
+#         # Perform linear regression
+#         X = df['気温'].values.reshape(-1, 1)
+#         y = df['傾斜角X（縦方向）'].values
+#         reg = LinearRegression().fit(X, y)
+#         reg_coef = reg.coef_[0]
 
-        # Adjust data
-        df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
-        df['Diff_X'] = df['Predicted_X'].diff()
-        df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
+#         # Adjust data
+#         df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+#         df['Diff_X'] = df['Predicted_X'].diff()
+#         df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
 
-        # Store the DataFrame and display name
-        all_data.append((display_name, df))
+#         # Store the DataFrame and display name
+#         all_data.append((display_name, df))
 
-# Create a large figure with subplots for all URLs
-num_plots = len(all_data)
-fig, axs = plt.subplots(num_plots, 1, figsize=(10, 5 * num_plots), sharex=True)
+# # Create a large figure with subplots for all URLs
+# num_plots = len(all_data)
+# fig, axs = plt.subplots(num_plots, 1, figsize=(10, 5 * num_plots), sharex=True)
 
-# Plot each URL's data
-for i, (display_name, df) in enumerate(all_data):
-    latest_diff_x = df['Diff_X'].iloc[-1]
-
-    # Background color based on the latest_diff_x value
-    if 0 <= abs(latest_diff_x) < 0.01:
-        background_color = '#ccffcc'  # Green
-    elif 0.01 <= abs(latest_diff_x) < 0.05:
-        background_color = '#ffff99'  # Yellow
-    elif 0.05 <= abs(latest_diff_x) < 0.1:
-        background_color = '#ff9999'  # Red
-    else:
-        background_color = '#ffffff'  # Default white
-
-    # Plot data for the current URL
-    axs[i].plot(df['日付'], df['Diff_X'], label=display_name, color='black')
-    axs[i].set_title(f'Kakudo Henka for {display_name}')
-    axs[i].set_xlabel('MM-DD hh')  # x 軸のラベルを設定
-    axs[i].set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
-    axs[i].legend()
-    axs[i].set_ylim(-0.2, 0.2)  # 縦軸のレンジを -0.2 から 0.2 までで固定
-
-# Adjust layout
-plt.tight_layout()
-
-# Show the plots
-st.pyplot(fig)
-
-# # Select a URL using a dropdown
-# selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
-# selected_url = url_display_names[selected_display_name]
-
-# # Fetch data for the selected URL
-# response = requests.get(selected_url, headers=headers, params=params)
-
-# if response.status_code == 200:
-#     data = response.json()
-
-#     # Create DataFrame
-#     inclination = []
-#     for i in range(len(data)):
-#         inclination.append(data[i]['content'])
-
-#     for i in range(len(inclination)):
-#         tmp = inclination[i].split(sep=',')
-#         inclination[i] = tmp
-
-#     # 前回の値を保持するための変数
-#     prev_value = None
-    
-#     def convert_to_numeric_with_threshold(value):
-#         global prev_value
-#         # 前回の値が存在しない場合はそのまま数値に変換
-#         if prev_value is None:
-#             prev_value = value
-#             return pd.to_numeric(value, errors='coerce')
-    
-#         # 前回の値との差が3度以上の場合はNaNを返す
-#         if abs(float(value) - float(prev_value)) >= 3:
-#             return float('NaN')
-    
-#         # 差が3度未満の場合はそのまま数値に変換
-#         prev_value = value
-#         return pd.to_numeric(value, errors='coerce')
-
-#     df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
-
-#     # Convert columns to appropriate data types
-#     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-#     df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
-#     df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
-#     df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
-#     df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
-#     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
-#     df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
-#     # NaNを含む行を削除する
-#     df = df.dropna()
-
-#     # データ数の表示
-#     num_samples = len(df)
-    
-#     # 平均気温の計算
-#     Tave = df['気温'].mean()
-
-#     # 選択した期間内のデータを使用して単回帰分析を行う
-#     X = df['気温'].values.reshape(-1, 1)
-#     y = df['傾斜角X（縦方向）'].values
-    
-#     # 線形回帰モデルを構築
-#     reg = LinearRegression().fit(X, y)
-    
-#     # 回帰係数を取得
-#     reg_coef = reg.coef_[0]
-
-#     # データの修正
-#     df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
-
-#     # 前回の値との差分を計算して新しい列を追加
-#     df['Diff_X'] = df['Predicted_X'].diff()
-
-#     # Diff_Xの最新値を取得
+# # Plot each URL's data
+# for i, (display_name, df) in enumerate(all_data):
 #     latest_diff_x = df['Diff_X'].iloc[-1]
 
-#     # 背景色の設定
+#     # Background color based on the latest_diff_x value
 #     if 0 <= abs(latest_diff_x) < 0.01:
 #         background_color = '#ccffcc'  # Green
 #     elif 0.01 <= abs(latest_diff_x) < 0.05:
@@ -262,36 +163,135 @@ st.pyplot(fig)
 #     else:
 #         background_color = '#ffffff'  # Default white
 
-#     background_color_css = f"""
+#     # Plot data for the current URL
+#     axs[i].plot(df['日付'], df['Diff_X'], label=display_name, color='black')
+#     axs[i].set_title(f'Kakudo Henka for {display_name}')
+#     axs[i].set_xlabel('MM-DD hh')  # x 軸のラベルを設定
+#     axs[i].set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
+#     axs[i].legend()
+#     axs[i].set_ylim(-0.2, 0.2)  # 縦軸のレンジを -0.2 から 0.2 までで固定
 
+# # Adjust layout
+# plt.tight_layout()
 
-#     <style>
-#         .stApp {{
-#             background-color: {background_color};
-#         }}
-#     </style>
-#     """
-#     st.markdown(background_color_css, unsafe_allow_html=True)
+# # Show the plots
+# st.pyplot(fig)
 
-#     # 累積変化の計算
-#     df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
+# Select a URL using a dropdown
+selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
+selected_url = url_display_names[selected_display_name]
+
+# Fetch data for the selected URL
+response = requests.get(selected_url, headers=headers, params=params)
+
+if response.status_code == 200:
+    data = response.json()
+
+    # Create DataFrame
+    inclination = []
+    for i in range(len(data)):
+        inclination.append(data[i]['content'])
+
+    for i in range(len(inclination)):
+        tmp = inclination[i].split(sep=',')
+        inclination[i] = tmp
+
+    # 前回の値を保持するための変数
+    prev_value = None
     
-#     # グラフのプロット
-#     fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
+    def convert_to_numeric_with_threshold(value):
+        global prev_value
+        # 前回の値が存在しない場合はそのまま数値に変換
+        if prev_value is None:
+            prev_value = value
+            return pd.to_numeric(value, errors='coerce')
     
-#     # '日付' を x 軸、'Diff_X' を y 軸にプロット
-#     ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
-#     ax.set_title('Kakudo Henka')
-#     ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
-#     ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
-#     ax.legend()
-
-#     # 縦軸のレンジを -0.2 から 0.2 までで固定
-#     ax.set_ylim(-0.2, 0.2)
+        # 前回の値との差が3度以上の場合はNaNを返す
+        if abs(float(value) - float(prev_value)) >= 3:
+            return float('NaN')
     
-#     # Streamlit でグラフを表示
-#     st.pyplot(fig)
+        # 差が3度未満の場合はそのまま数値に変換
+        prev_value = value
+        return pd.to_numeric(value, errors='coerce')
 
-# # Display error message if data fetching failed
-# if response.status_code != 200:
-#     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
+    df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
+
+    # Convert columns to appropriate data types
+    df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
+    df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
+    df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
+    df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
+    df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
+    df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
+    df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
+    # NaNを含む行を削除する
+    df = df.dropna()
+
+    # データ数の表示
+    num_samples = len(df)
+    
+    # 平均気温の計算
+    Tave = df['気温'].mean()
+
+    # 選択した期間内のデータを使用して単回帰分析を行う
+    X = df['気温'].values.reshape(-1, 1)
+    y = df['傾斜角X（縦方向）'].values
+    
+    # 線形回帰モデルを構築
+    reg = LinearRegression().fit(X, y)
+    
+    # 回帰係数を取得
+    reg_coef = reg.coef_[0]
+
+    # データの修正
+    df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+
+    # 前回の値との差分を計算して新しい列を追加
+    df['Diff_X'] = df['Predicted_X'].diff()
+
+    # Diff_Xの最新値を取得
+    latest_diff_x = df['Diff_X'].iloc[-1]
+
+    # 背景色の設定
+    if 0 <= abs(latest_diff_x) < 0.01:
+        background_color = '#ccffcc'  # Green
+    elif 0.01 <= abs(latest_diff_x) < 0.05:
+        background_color = '#ffff99'  # Yellow
+    elif 0.05 <= abs(latest_diff_x) < 0.1:
+        background_color = '#ff9999'  # Red
+    else:
+        background_color = '#ffffff'  # Default white
+
+    background_color_css = f"""
+
+
+    <style>
+        .stApp {{
+            background-color: {background_color};
+        }}
+    </style>
+    """
+    st.markdown(background_color_css, unsafe_allow_html=True)
+
+    # 累積変化の計算
+    df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
+    
+    # グラフのプロット
+    fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
+    
+    # '日付' を x 軸、'Diff_X' を y 軸にプロット
+    ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
+    ax.set_title('Kakudo Henka')
+    ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
+    ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
+    ax.legend()
+
+    # 縦軸のレンジを -0.2 から 0.2 までで固定
+    ax.set_ylim(-0.2, 0.2)
+    
+    # Streamlit でグラフを表示
+    st.pyplot(fig)
+
+# Display error message if data fetching failed
+if response.status_code != 200:
+    st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
