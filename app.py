@@ -71,9 +71,9 @@ url_display_names = {
     "５：泉谷": url05
 }
 # グラフを描画するための空のリストを用意
-fig, axs = plt.subplots(len(urls), 1, figsize=(12, 10), sharex=True, squeeze=False)
+fig, axs = plt.subplots(len(url_display_names), 1, figsize=(12, 10), sharex=True, squeeze=False)
 
-for i, (display_name, url) in enumerate(urls.items()):
+for i, (display_name, url) in enumerate(url_display_names.items()):
     # Fetch data for the selected URL
     response = requests.get(url, headers=headers, params=params)
 
