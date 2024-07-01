@@ -81,7 +81,6 @@ url_display_names = {
 
 # Create a figure with subplots for all sensors
 fig, axs = plt.subplots(len(url_display_names), 1, figsize=(14, 5 * len(url_display_names)), sharex=True, squeeze=False)
-fig.tight_layout(pad=5.0)
 
 for i, (display_name, url) in enumerate(url_display_names.items()):
     try:
@@ -197,6 +196,9 @@ for i, (display_name, url) in enumerate(url_display_names.items()):
         ax.set_ylim(-0.2, 0.2)
         ax.set_xticks([])
         ax.set_yticks([])
+
+# Improve the layout
+fig.tight_layout()
 
 # Show the plot
 st.pyplot(fig)
