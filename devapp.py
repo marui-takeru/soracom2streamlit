@@ -191,7 +191,7 @@ if response.status_code == 200:
 
     # 前回の値との差分を計算して新しい列を追加
     df['Diff_X'] = df['Predicted_X'].diff()
-    color_diff(Diff_X)
+    color_diff(df['Diff_X'])
 
     # Diff_Xの最大値を計算
     max_diff_x = df['Diff_X'].max()
