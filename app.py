@@ -65,6 +65,7 @@ params = {
     'to': unix_timestamp_ms_end
 }
 
+print('OK')
 # Define URLs
 url_display_names = {
     "１：上田宅上": url01,
