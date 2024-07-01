@@ -187,7 +187,7 @@ if response.status_code == 200:
     latest_diff_x = df['Diff_X'].iloc[-1]
 
     # 背景色の設定
-    if 0 < abs(latest_diff_x) < 0.01:
+    if 0 <= abs(latest_diff_x) < 0.01:
         background_color = '#ccffcc'  # Green
     elif 0.01 <= abs(latest_diff_x) < 0.05:
         background_color = '#ffff99'  # Yellow
