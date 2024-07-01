@@ -104,8 +104,8 @@ for idx, (display_name, url) in enumerate(url_display_names.items()):
         
         # データ型の変換
         df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-        df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
-        df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
+        df['傾斜角X（縦方向）'] = df['傾斜角X']# .apply(convert_to_numeric_with_threshold)
+        df['傾斜角Y（横方向）'] = df['傾斜角Y']# .apply(convert_to_numeric_with_threshold)
         df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
         df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
         df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
