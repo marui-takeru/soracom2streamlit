@@ -1,13 +1,13 @@
-# 以下を「app.py」に書き込み
-
+import streamlit as st
 import pandas as pd
 import json
 import requests
 import datetime
-import streamlit as st
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+import streamlit.components.v1 as components
 
 # APIの認証情報を環境変数から取得
-# Streamlit community cloudの「secrets」からSoracomAPIを取得
 api_username = st.secrets.APIs.api_username
 api_password = st.secrets.APIs.api_password
 api_email = st.secrets.APIs.api_email
@@ -23,11 +23,13 @@ url07 = st.secrets.APIs.url07
 url08 = st.secrets.APIs.url08
 url09 = st.secrets.APIs.url09
 url10 = st.secrets.APIs.url10
+url11 = st.secrets.APIs.url11
+url12 = st.secrets.APIs.url12
 
 # Streamlit app
-st.title('堂野窪地区　傾斜センサ')
+st.title('【試行段階】　堂野窪傾斜計')
 
-#apiキーとトークンを作成
+# APIキーとトークンを作成
 auth = (api_username, api_password)
 headers = {'Content-Type': 'application/json'}
 data = {'email': api_email, 'password': api_data_password}
@@ -40,17 +42,20 @@ api_key = auth_response['apiKey']
 api_token = auth_response['token']
 
 # Allow users to select the time range
-selected_week = st.selectbox('閲覧したい週を選んでください', ['今週', '先週', '2週間前'])
+selected_week = st.selectbox('閲覧したい週を選んでください', ['今週', '先週', '2週間前', '3週間前'])
 
 # Calculate the time range based on the selected option
 current_time = datetime.datetime.now()
 
+# 月曜日区切りにするのではなく、直近の7日間のデータを表示できるようにする
 if selected_week == '今週':
     date_start = current_time - datetime.timedelta(days=current_time.weekday())
 elif selected_week == '先週':
     date_start = current_time - datetime.timedelta(days=current_time.weekday() + 7)
 elif selected_week == '2週間前':
     date_start = current_time - datetime.timedelta(days=current_time.weekday() + 14)
+elif selected_week == '3週間前':
+    date_start = current_time - datetime.timedelta(days=current_time.weekday() + 21)
 
 # Set the start and end date times
 date_start = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -83,7 +88,9 @@ url_display_names = {
     "７：名古谷2": url07,
     "８：横之地": url08,
     "９：集会所上": url09,
-    "１０：ヒラノジ": url10
+    "１０：ヒラノジ": url10,
+    "１１：予備１": url11,
+    "１２：予備２": url12
 }
 
 # Select a URL using a dropdown
@@ -105,33 +112,109 @@ if response.status_code == 200:
         tmp = inclination[i].split(sep=',')
         inclination[i] = tmp
 
+    # 前回の値を保持するための変数
+    prev_value = None
+    
+    def convert_to_numeric_with_threshold(value):
+        global prev_value
+        # 前回の値が存在しない場合はそのまま数値に変換
+        if prev_value is None:
+            prev_value = value
+            return pd.to_numeric(value, errors='coerce')
+    
+        # 前回の値との差が3度以上の場合はNaNを返す
+        if abs(float(value) - float(prev_value)) >= 3:
+            return float('NaN')
+    
+        # 差が3度未満の場合はそのまま数値に変換
+        prev_value = value
+        return pd.to_numeric(value, errors='coerce')
+
     df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
 
     # Convert columns to appropriate data types
     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-    df['傾斜角X'] = pd.to_numeric(df['傾斜角X'], errors='coerce')
-    df['傾斜角Y'] = pd.to_numeric(df['傾斜角Y'], errors='coerce')
+    df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
+    df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
     df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
     df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
     df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
+    # NaNを含む行を削除する
+    df = df.dropna()
+
+    # データ数の表示
+    num_samples = len(df)
+    st.write(f'使用されたデータ数：{num_samples}個')
+    
+    # 平均気温の計算
+    Tave = df['気温'].mean()
+
+    # 選択した期間内のデータを使用して単回帰分析を行う
+    X = df['気温'].values.reshape(-1, 1)
+    y = df['傾斜角X（縦方向）'].values
+    
+    # 線形回帰モデルを構築
+    reg = LinearRegression().fit(X, y)
+    
+    # 回帰係数を取得
+    reg_coef = reg.coef_[0]
+
+    # データの修正
+    df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+
+    # 前回の値との差分を計算して新しい列を追加
+    df['Diff_X'] = df['Predicted_X'].diff()
+
+    # Diff_Xの最新値を取得
+    latest_diff_x = df['Diff_X'].iloc[-1]
+
+    # 背景色の設定
+    if 0 <= abs(latest_diff_x) < 0.01:
+        background_color = '#ccffcc'  # Green
+    elif 0.01 <= abs(latest_diff_x) < 0.05:
+        background_color = '#ffff99'  # Yellow
+    elif 0.05 <= abs(latest_diff_x) < 0.1:
+        background_color = '#ff9999'  # Red
+    else:
+        background_color = '#ffffff'  # Default white
+
+    background_color_css = f"""
 
 
-    # Display the DataFrame
-    st.write(df.drop(columns=['傾斜角Z']).head())
+    <style>
+        .stApp {{
+            background-color: {background_color};
+        }}
+    </style>
+    """
+    st.markdown(background_color_css, unsafe_allow_html=True)
 
-    with st.expander("過去の記録を見る"):
-        st.write(df.set_index('日付').drop(columns=['傾斜角Z']))
+    # 累積変化の計算
+    df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
     
-    # Allow users to select the y-axis data
-    selected_y_axes = ['傾斜角X', '傾斜角Y', '電圧', '気温', '湿度']
-    axis_labels = {'傾斜角X': 'Angle_X', '傾斜角Y': 'Angle_Y', '電圧': 'Voltage', '気温': 'Temperature', '湿度': 'Humidity'}
+    # グラフのプロット
+    fig, ax = plt.subplots(4, 1, figsize=(10, 20))
     
-    # Create subplots for each selected y-axis
-    for selected_y_axis in selected_y_axes:
-        st.write(selected_y_axis)
-        st.line_chart(df.set_index('日付')[selected_y_axis])  # Use set_index to use '日付' as index
+    ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
+    ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
+    ax[0].set_title('Value X')
+    ax[0].legend()
+
+    ax[1].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
+    ax[1].set_title('Difference X')
+    ax[1].legend()
     
-    # Display error message if data fetching failed
+    ax[2].plot(df['日付'], df['Cumulative_Diff_X'], label='Cumulative Diff X', color='green')
+    ax[2].set_title('Cumulative Difference X')
+    ax[2].legend()
+
+    ax[3].plot(df['日付'], df['気温'], label='Temperature')
+    ax[3].set_title('Temperature')
+    ax[3].legend()
+
+    st.pyplot(fig)
+
+# Display error message if data fetching failed
 if response.status_code != 200:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
