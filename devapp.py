@@ -1,12 +1,12 @@
+import streamlit as st
 import pandas as pd
 import json
 import requests
 import datetime
-import streamlit as st
 import base64
-from sklearn import linear_model
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
+import streamlit.components.v1 as components
 
 # APIの認証情報を環境変数から取得
 # Streamlit community cloudの「secrets」からSoracomAPIを取得
@@ -31,7 +31,7 @@ url12 = st.secrets.APIs.url12
 # Streamlit app
 st.title('【試行段階】　堂野窪傾斜計')
 
-#apiキーとトークンを作成
+# APIキーとトークンを作成
 auth = (api_username, api_password)
 headers = {'Content-Type': 'application/json'}
 data = {'email': api_email, 'password': api_data_password}
@@ -112,7 +112,6 @@ def color_diff(val):
         color = 'background-color: red'
     return color
 
-
 # DataFrameをHTMLに変換する
 def style_dataframe(df):
     styled_df = df.style.applymap(lambda x: color_diff(x), subset=['Diff_X'])
@@ -188,7 +187,8 @@ if response.status_code == 200:
 
     # データフレームを表示
     styled_df = style_dataframe(df)
-    st.write(styled_df.to_html(), unsafe_allow_html=True)
+    html = styled_df.to_html()
+    components.html(html, height=600, scrolling=True)
 
     # Diff_Xの最大値を計算
     max_diff_x = df['Diff_X'].max()
