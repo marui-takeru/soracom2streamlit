@@ -131,53 +131,53 @@ for display_name, url in url_display_names.items():
             prev_value = value
             return pd.to_numeric(value, errors='coerce')
 
-        df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
+        # df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
 
-        # Convert columns to appropriate data types
-        df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-        df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
-        df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
-        df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
-        df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
-        df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
-        df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
-        # NaNを含む行を削除する
-        df = df.dropna()
+        # # Convert columns to appropriate data types
+        # df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
+        # df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
+        # df['傾斜角Y（横方向）'] = df['傾斜角Y'].apply(convert_to_numeric_with_threshold)
+        # df['傾斜角Z'] = pd.to_numeric(df['傾斜角Z'], errors='coerce')
+        # df['電圧'] = pd.to_numeric(df['電圧'], errors='coerce')
+        # df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
+        # df['湿度'] = pd.to_numeric(df['湿度'], errors='coerce')
+        # # NaNを含む行を削除する
+        # df = df.dropna()
 
-        # データ数の表示
-        num_samples = len(df)
+        # # データ数の表示
+        # num_samples = len(df)
         
-        # 平均気温の計算
-        Tave = df['気温'].mean()
+        # # 平均気温の計算
+        # Tave = df['気温'].mean()
 
-        # 選択した期間内のデータを使用して単回帰分析を行う
-        X = df['気温'].values.reshape(-1, 1)
-        y = df['傾斜角X（縦方向）'].values
+        # # 選択した期間内のデータを使用して単回帰分析を行う
+        # X = df['気温'].values.reshape(-1, 1)
+        # y = df['傾斜角X（縦方向）'].values
         
-        # 線形回帰モデルを構築
-        reg = LinearRegression().fit(X, y)
+        # # 線形回帰モデルを構築
+        # reg = LinearRegression().fit(X, y)
         
-        # 回帰係数を取得
-        reg_coef = reg.coef_[0]
+        # # 回帰係数を取得
+        # reg_coef = reg.coef_[0]
 
-        # データの修正
-        df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+        # # データの修正
+        # df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
 
-        # 前回の値との差分を計算して新しい列を追加
-        df['Diff_X'] = df['Predicted_X'].diff()
+        # # 前回の値との差分を計算して新しい列を追加
+        # df['Diff_X'] = df['Predicted_X'].diff()
 
-        # Diff_Xの最新値を取得
-        latest_diff_x = df['Diff_X'].iloc[-1]
+        # # Diff_Xの最新値を取得
+        # latest_diff_x = df['Diff_X'].iloc[-1]
 
-        # 背景色の設定
-        if 0 <= abs(latest_diff_x) < 0.01:
-            background_color = '#ccffcc'  # Green
-        elif 0.01 <= abs(latest_diff_x) < 0.05:
-            background_color = '#ffff99'  # Yellow
-        elif 0.05 <= abs(latest_diff_x) < 0.1:
-            background_color = '#ff9999'  # Red
-        else:
-            background_color = '#ffffff'  # Default white
+        # # 背景色の設定
+        # if 0 <= abs(latest_diff_x) < 0.01:
+        #     background_color = '#ccffcc'  # Green
+        # elif 0.01 <= abs(latest_diff_x) < 0.05:
+        #     background_color = '#ffff99'  # Yellow
+        # elif 0.05 <= abs(latest_diff_x) < 0.1:
+        #     background_color = '#ff9999'  # Red
+        # else:
+        #     background_color = '#ffffff'  # Default white
 
         # # 累積変化の計算
         # df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
