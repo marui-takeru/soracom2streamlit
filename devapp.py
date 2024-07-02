@@ -208,6 +208,10 @@ if response.status_code == 200:
         ax[3].legend()
 
         st.pyplot(fig)
+
+        with st.expander("過去の記録を見る"):
+            st.write(df.set_index('日付').drop(columns=['傾斜角Z']))
+            
     else:
         st.error('過去7日分のデータが存在しません。')
 else:
