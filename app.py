@@ -124,59 +124,61 @@ if response.status_code == 200:
     # NaNを含む行を削除する
     df = df.dropna()
 
-    # データ数の表示
-    num_samples = len(df)
+    # データが存在するかチェック
+    if not df.empty:
+        # データ数の表示
+        num_samples = len(df)
+        
+        # 平均気温の計算
+        Tave = df['気温'].mean()
     
-    # 平均気温の計算
-    Tave = df['気温'].mean()
-
-    # 選択した期間内のデータを使用して単回帰分析を行う
-    X = df['気温'].values.reshape(-1, 1)
-    y = df['傾斜角X（縦方向）'].values
+        # 選択した期間内のデータを使用して単回帰分析を行う
+        X = df['気温'].values.reshape(-1, 1)
+        y = df['傾斜角X（縦方向）'].values
+        
+        # 線形回帰モデルを構築
+        reg = LinearRegression().fit(X, y)
+        
+        # 回帰係数を取得
+        reg_coef = reg.coef_[0]
     
-    # 線形回帰モデルを構築
-    reg = LinearRegression().fit(X, y)
+        # データの修正
+        df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
     
-    # 回帰係数を取得
-    reg_coef = reg.coef_[0]
-
-    # データの修正
-    df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
-
-    # 前回の値との差分を計算して新しい列を追加
-    df['Diff_X'] = df['Predicted_X'].diff()
-
-    # Diff_Xの最新値を取得
-    latest_diff_x = df['Diff_X'].iloc[-1]
-
-    # 背景色の設定
-    background_color = '#ffffff'  # Default white
-    if 0.0 <= abs(latest_diff_x) < 0.05:
-        background_color = '#ccffcc'  # Green
-    elif 0.05 <= abs(latest_diff_x) < 0.1:
-        background_color = '#ffff99'  # Yellow
-    else :
-        background_color = '#ff9999'  # Red
+        # 前回の値との差分を計算して新しい列を追加
+        df['Diff_X'] = df['Predicted_X'].diff()
     
-    # グラフのプロット
-    fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
-
-    # Set the background color of the figure
-    ax.set_facecolor(background_color)
+        # Diff_Xの最新値を取得
+        latest_diff_x = df['Diff_X'].iloc[-1]
     
-    # '日付' を x 軸、'Diff_X' を y 軸にプロット
-    ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
-    ax.set_title('Kakudo Henka')
-    ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
-    ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
-    ax.legend()
-
-    # 縦軸のレンジを -0.2 から 0.2 までで固定
-    ax.set_ylim(-0.2, 0.2)
+        # 背景色の設定
+        background_color = '#ffffff'  # Default white
+        if 0.0 <= abs(latest_diff_x) < 0.05:
+            background_color = '#ccffcc'  # Green
+        elif 0.05 <= abs(latest_diff_x) < 0.1:
+            background_color = '#ffff99'  # Yellow
+        else :
+            background_color = '#ff9999'  # Red
+        
+        # グラフのプロット
+        fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
     
-    # Streamlit でグラフを表示
-    st.pyplot(fig)
-
-# Display error message if data fetching failed
-if response.status_code != 200:
+        # Set the background color of the figure
+        ax.set_facecolor(background_color)
+        
+        # '日付' を x 軸、'Diff_X' を y 軸にプロット
+        ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
+        ax.set_title('Kakudo Henka')
+        ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
+        ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
+        ax.legend()
+    
+        # 縦軸のレンジを -0.2 から 0.2 までで固定
+        ax.set_ylim(-0.2, 0.2)
+        
+        # Streamlit でグラフを表示
+        st.pyplot(fig)
+    else:
+        st.error('過去７日分のデータが存在しません。')
+else:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
