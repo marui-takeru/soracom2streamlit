@@ -154,14 +154,13 @@ if response.status_code == 200:
     latest_diff_x = df['Diff_X'].iloc[-1]
 
     # 背景色の設定
-    if 0 <= abs(latest_diff_x) < 0.01:
+    background_color = '#ffffff'  # Default white
+    if 0.0 <= abs(latest_diff_x) < 0.05:
         background_color = '#ccffcc'  # Green
-    elif 0.01 <= abs(latest_diff_x) < 0.05:
+    elif 0.05 <= abs(latest_diff_x) < 0.1:
         background_color = '#ffff99'  # Yellow
-    elif 0.05 <= abs(latest_diff_x):
+    else :
         background_color = '#ff9999'  # Red
-    else:
-        background_color = '#ffffff'  # Default white
     
     # グラフのプロット
     fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
