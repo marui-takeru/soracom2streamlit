@@ -130,7 +130,8 @@ if response.status_code == 200:
         df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
     
         # 前回の値との差分を計算して新しい列を追加
-        df['角度変化'] = df['Predicted_X'].diff()
+        df['角度変化'] = df['Predicted_X'].diff().shift(-1)
+        df['角度変化'].iloc[-1] = 0  # 最後の行に0を設定
     
         #  '角度変化'の最新値を取得
         latest_diff_x = df['角度変化'].iloc[-1]
