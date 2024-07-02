@@ -25,7 +25,7 @@ url09 = st.secrets.APIs.url09
 url10 = st.secrets.APIs.url10
 
 # Streamlit app
-st.title('堂野窪　傾斜センサ')
+st.title('堂野窪 傾斜センサ')
 
 # APIキーとトークンを作成
 auth = (api_username, api_password)
@@ -43,11 +43,11 @@ api_token = auth_response['token']
 current_time = datetime.datetime.now()
 
 date_end = current_time  # 現在の日付
-date_start = current_time - datetime.timedelta(days=7)  # 今週の月曜日の日付
+date_start = current_time - datetime.timedelta(days=7)  # 7日前の日付
 
 # Set the start and end date times
 date_start = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
-date_end = date_start + datetime.timedelta(days=7)
+date_end = date_end.replace(hour=23, minute=59, second=59, microsecond=999999)
 
 # Convert to Unix timestamps
 unix_timestamp_ms_start = int(date_start.timestamp() * 1000)
@@ -78,6 +78,7 @@ url_display_names = {
     "９：集会所上": url09,
     "１０：ヒラノジ": url10
 }
+
 # Select a URL using a dropdown
 selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
 selected_url = url_display_names[selected_display_name]
@@ -90,30 +91,8 @@ if response.status_code == 200:
 
     # Create DataFrame
     inclination = []
-    for i in range(len(data)):
-        inclination.append(data[i]['content'])
-
-    for i in range(len(inclination)):
-        tmp = inclination[i].split(sep=',')
-        inclination[i] = tmp
-
-    # 前回の値を保持するための変数
-    prev_value = None
-    
-    def convert_to_numeric_with_threshold(value):
-        global prev_value
-        # 前回の値が存在しない場合はそのまま数値に変換
-        if prev_value is None:
-            prev_value = value
-            return pd.to_numeric(value, errors='coerce')
-    
-        # 前回の値との差が3度以上の場合はNaNを返す
-        if abs(float(value) - float(prev_value)) >= 3:
-            return float('NaN')
-    
-        # 差が3度未満の場合はそのまま数値に変換
-        prev_value = value
-        return pd.to_numeric(value, errors='coerce')
+    for item in data:
+        inclination.append(item['content'].split(','))
 
     df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
 
@@ -121,6 +100,7 @@ if response.status_code == 200:
     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
     df['傾斜角X（縦方向）'] = pd.to_numeric(df['傾斜角X'])
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
+    
     # NaNを含む行を削除する
     df = df.dropna()
 
@@ -157,7 +137,7 @@ if response.status_code == 200:
             background_color = '#ccffcc'  # Green
         elif 0.05 <= abs(latest_diff_x) < 0.1:
             background_color = '#ffff99'  # Yellow
-        else :
+        else:
             background_color = '#ff9999'  # Red
         
         # グラフのプロット
@@ -179,6 +159,6 @@ if response.status_code == 200:
         # Streamlit でグラフを表示
         st.pyplot(fig)
     else:
-        st.error('過去７日分のデータが存在しません。')
+        st.error('データが存在しません。')
 else:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
