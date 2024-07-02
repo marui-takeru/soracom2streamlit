@@ -5,7 +5,6 @@ import requests
 import datetime
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
-import streamlit.components.v1 as components
 
 # APIの認証情報を環境変数から取得
 api_username = st.secrets.APIs.api_username
@@ -48,7 +47,7 @@ date_start = current_time - datetime.timedelta(days=7)  # 過去7日分のデー
 
 # Set the start and end date times
 date_start = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
-date_end = date_start + datetime.timedelta(days=7)
+date_end = current_time
 
 # Convert to Unix timestamps
 unix_timestamp_ms_start = int(date_start.timestamp() * 1000)
@@ -136,80 +135,80 @@ if response.status_code == 200:
     # NaNを含む行を削除する
     df = df.dropna()
 
-    # データ数の表示
-    num_samples = len(df)
-    st.write(f'使用されたデータ数：{num_samples}個')
-    
-    # 平均気温の計算
-    Tave = df['気温'].mean()
+    # データが存在するかチェック
+    if not df.empty:
+        # データ数の表示
+        num_samples = len(df)
+        st.write(f'使用されたデータ数：{num_samples}個')
+        
+        # 平均気温の計算
+        Tave = df['気温'].mean()
 
-    # 選択した期間内のデータを使用して単回帰分析を行う
-    X = df['気温'].values.reshape(-1, 1)
-    y = df['傾斜角X（縦方向）'].values
-    
-    # 線形回帰モデルを構築
-    reg = LinearRegression().fit(X, y)
-    
-    # 回帰係数を取得
-    reg_coef = reg.coef_[0]
-    st.write(f'回帰係数：{reg_coef}')
+        # 選択した期間内のデータを使用して単回帰分析を行う
+        X = df['気温'].values.reshape(-1, 1)
+        y = df['傾斜角X（縦方向）'].values
+        
+        # 線形回帰モデルを構築
+        reg = LinearRegression().fit(X, y)
+        
+        # 回帰係数を取得
+        reg_coef = reg.coef_[0]
+        st.write(f'回帰係数：{reg_coef}')
 
-    # データの修正
-    df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
-    st.write(f'平均気温：{Tave}℃')
+        # データの修正
+        df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+        st.write(f'平均気温：{Tave}℃')
 
-    # 前回の値との差分を計算して新しい列を追加
-    df['Diff_X'] = df['Predicted_X'].diff()
+        # 前回の値との差分を計算して新しい列を追加
+        df['Diff_X'] = df['Predicted_X'].diff()
 
-    # Diff_Xの最新値を取得
-    latest_diff_x = df['Diff_X'].iloc[-1]
-    st.write(f'最新の差分値：{latest_diff_x}')
+        # Diff_Xの最新値を取得
+        latest_diff_x = df['Diff_X'].iloc[-1]
+        st.write(f'最新の差分値：{latest_diff_x}')
 
-    # 背景色の設定
-    background_color = '#ffffff'  # Default white
-    if 0.0 <= abs(latest_diff_x) < 0.05:
-        background_color = '#ccffcc'  # Green
-    elif 0.05 <= abs(latest_diff_x) < 0.1:
-        background_color = '#ffff99'  # Yellow
-    else :
-        background_color = '#ff9999'  # Red
+        # 背景色の設定
+        background_color = '#ffffff'  # Default white
+        if 0.0 <= abs(latest_diff_x) < 0.05:
+            background_color = '#ccffcc'  # Green
+        elif 0.05 <= abs(latest_diff_x) < 0.1:
+            background_color = '#ffff99'  # Yellow
+        else :
+            background_color = '#ff9999'  # Red
 
-    background_color_css = f"""
+        background_color_css = f"""
+        <style>
+            .stApp {{
+                background-color: {background_color};
+            }}
+        </style>
+        """
+        st.markdown(background_color_css, unsafe_allow_html=True)
 
+        # 累積変化の計算
+        df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
+        
+        # グラフのプロット
+        fig, ax = plt.subplots(4, 1, figsize=(10, 20))
+        
+        ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
+        ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
+        ax[0].set_title('Value X')
+        ax[0].legend()
 
-    <style>
-        .stApp {{
-            background-color: {background_color};
-        }}
-    </style>
-    """
-    st.markdown(background_color_css, unsafe_allow_html=True)
+        ax[1].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
+        ax[1].set_title('Difference X')
+        ax[1].legend()
+        
+        ax[2].plot(df['日付'], df['Cumulative_Diff_X'], label='Cumulative Diff X', color='green')
+        ax[2].set_title('Cumulative Difference X')
+        ax[2].legend()
 
-    # 累積変化の計算
-    df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
-    
-    # グラフのプロット
-    fig, ax = plt.subplots(4, 1, figsize=(10, 20))
-    
-    ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
-    ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
-    ax[0].set_title('Value X')
-    ax[0].legend()
+        ax[3].plot(df['日付'], df['気温'], label='Temperature')
+        ax[3].set_title('Temperature')
+        ax[3].legend()
 
-    ax[1].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
-    ax[1].set_title('Difference X')
-    ax[1].legend()
-    
-    ax[2].plot(df['日付'], df['Cumulative_Diff_X'], label='Cumulative Diff X', color='green')
-    ax[2].set_title('Cumulative Difference X')
-    ax[2].legend()
-
-    ax[3].plot(df['日付'], df['気温'], label='Temperature')
-    ax[3].set_title('Temperature')
-    ax[3].legend()
-
-    st.pyplot(fig)
-
-# Display error message if data fetching failed
-if response.status_code != 200:
+        st.pyplot(fig)
+    else:
+        st.error('過去7日分のデータが存在しません。')
+else:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
