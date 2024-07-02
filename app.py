@@ -106,6 +106,10 @@ if response.status_code == 200:
 
     # データが存在するかチェック
     if not df.empty:
+        # 最新のデータ取得時刻を表示
+        latest_date = df['日付'].max()
+        st.write(f'最新のデータ取得時刻：{latest_date}')
+        
         # データ数の表示
         num_samples = len(df)
         
@@ -139,17 +143,23 @@ if response.status_code == 200:
             background_color = '#ffff99'  # Yellow
         else:
             background_color = '#ff9999'  # Red
+
+        background_color_css = f"""
+        <style>
+            .stApp {{
+                background-color: {background_color};
+            }}
+        </style>
+        """
+        st.markdown(background_color_css, unsafe_allow_html=True)
         
         # グラフのプロット
         fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
-    
-        # Set the background color of the figure
-        ax.set_facecolor(background_color)
         
         # '日付' を x 軸、'Diff_X' を y 軸にプロット
         ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
         ax.set_title('Kakudo Henka')
-        ax.set_xlabel('MM-DD hh')  # x 軸のラベルを設定
+        ax.set_xlabel('YYYY-MM-DD')  # x 軸のラベルを設定
         ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
         ax.legend()
     
@@ -158,6 +168,10 @@ if response.status_code == 200:
         
         # Streamlit でグラフを表示
         st.pyplot(fig)
+
+        # 表の作成
+        st.write(df.set_index('日付').drop(columns=['傾斜角Z', '傾斜角X（縦方向）', '傾斜角Y（横方向）', 'Predicted_X']))
+        
     else:
         st.error('データが存在しません。')
 else:
