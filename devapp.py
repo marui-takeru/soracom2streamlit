@@ -110,7 +110,8 @@ if response.status_code == 200:
     
             # 前回の値との差が3度以上の場合はNaNを返す
             if abs(current_value - prev_value) >= 3:
-                return float('NaN')
+                current_value = prev_value
+                return current_value
     
             # 差が3度未満の場合はそのまま数値に変換
             prev_value = current_value
