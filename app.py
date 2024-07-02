@@ -130,10 +130,10 @@ if response.status_code == 200:
         df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
     
         # 前回の値との差分を計算して新しい列を追加
-        df['Diff_X'] = df['Predicted_X'].diff()
+        df['角度変化'] = df['Predicted_X'].diff()
     
-        # Diff_Xの最新値を取得
-        latest_diff_x = df['Diff_X'].iloc[-1]
+        #  '角度変化'の最新値を取得
+        latest_diff_x = df['角度変化'].iloc[-1]
     
         # 背景色の設定
         background_color = '#ffffff'  # Default white
@@ -157,7 +157,7 @@ if response.status_code == 200:
         fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
         
         # '日付' を x 軸、'Diff_X' を y 軸にプロット
-        ax.plot(df['日付'], df['Diff_X'], label='Sabun', color='black')
+        ax.plot(df['日付'], df['角度変化'], label='Sabun', color='black')
         ax.set_title('Kakudo Henka')
         ax.set_xlabel('YYYY-MM-DD')  # x 軸のラベルを設定
         ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
@@ -170,7 +170,11 @@ if response.status_code == 200:
         st.pyplot(fig)
 
         # 表の作成
-        st.write(df.set_index('日付').drop(columns=['傾斜角Y', '傾斜角Z', '傾斜角X（縦方向）', 'Predicted_X']))
+        # 表示したい列の順番を指定
+        columns_order = ['角度変化', '傾斜角X', '電圧', '気温', '湿度']
+        
+        # 表を表示
+        st.write(df.set_index('日付')[columns_order])
         
     else:
         st.error('データが存在しません。')
