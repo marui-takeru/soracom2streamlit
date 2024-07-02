@@ -152,7 +152,6 @@ if response.status_code == 200:
 
     # Diff_Xの最新値を取得
     latest_diff_x = df['Diff_X'].iloc[-1]
-    st.write(latest_diff_x)
 
     # 背景色の設定
     background_color = '#ffffff'  # Default white
