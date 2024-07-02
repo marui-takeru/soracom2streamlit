@@ -110,13 +110,16 @@ if response.status_code == 200:
             current_value = float(value)
             if prev_value is None:
                 prev_value = current_value
+                st.write(f'初期値設定: {prev_value}') # デバッグ用プリント
                 return current_value
     
             # 前回の値との差が3度以上の場合はNaNを返す
             if abs(current_value - prev_value) >= 3:
+                st.write(f'閾値超過: {current_value} (prev: {prev_value})')  # デバッグ用プリント
                 return float('NaN')
     
             # 差が3度未満の場合はそのまま数値に変換
+            st.write(f'値更新: {prev_value} -> {current_value}')  # デバッグ用プリント
             prev_value = current_value
             return current_value
         except ValueError:
