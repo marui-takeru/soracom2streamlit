@@ -5,6 +5,7 @@ import requests
 import datetime
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
+import streamlit.components.v1 as components
 
 # APIの認証情報を環境変数から取得
 api_username = st.secrets.APIs.api_username
@@ -77,7 +78,6 @@ url_display_names = {
     "９：集会所上": url09,
     "１０：ヒラノジ": url10
 }
-
 # Select a URL using a dropdown
 selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
 selected_url = url_display_names[selected_display_name]
@@ -99,18 +99,18 @@ if response.status_code == 200:
 
     # 前回の値を保持するための変数
     prev_value = None
-
+    
     def convert_to_numeric_with_threshold(value):
-        nonlocal prev_value
+        global prev_value
         # 前回の値が存在しない場合はそのまま数値に変換
         if prev_value is None:
             prev_value = value
             return pd.to_numeric(value, errors='coerce')
-
+    
         # 前回の値との差が3度以上の場合はNaNを返す
         if abs(float(value) - float(prev_value)) >= 3:
             return float('NaN')
-
+    
         # 差が3度未満の場合はそのまま数値に変換
         prev_value = value
         return pd.to_numeric(value, errors='coerce')
@@ -119,7 +119,7 @@ if response.status_code == 200:
 
     # Convert columns to appropriate data types
     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-    df['傾斜角X'] = pd.to_numeric(df['傾斜角X'], errors='coerce')
+    df['傾斜角X（縦方向）'] = pd.to_numeric(df['傾斜角X'])
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
     # NaNを含む行を削除する
     df = df.dropna()
@@ -134,7 +134,7 @@ if response.status_code == 200:
     
         # 選択した期間内のデータを使用して単回帰分析を行う
         X = df['気温'].values.reshape(-1, 1)
-        y = df['傾斜角X'].values
+        y = df['傾斜角X（縦方向）'].values
         
         # 線形回帰モデルを構築
         reg = LinearRegression().fit(X, y)
@@ -143,7 +143,7 @@ if response.status_code == 200:
         reg_coef = reg.coef_[0]
     
         # データの修正
-        df['Predicted_X'] = df['傾斜角X'] - reg_coef * (df['気温'] - Tave)
+        df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
     
         # 前回の値との差分を計算して新しい列を追加
         df['Diff_X'] = df['Predicted_X'].diff()
