@@ -93,12 +93,8 @@ if response.status_code == 200:
 
     # Create DataFrame
     inclination = []
-    for i in range(len(data)):
-        inclination.append(data[i]['content'])
-
-    for i in range(len(inclination)):
-        tmp = inclination[i].split(sep=',')
-        inclination[i] = tmp
+    for item in data:
+        inclination.append(item['content'].split(','))
 
     # 前回の値を保持するための変数
     prev_value = None
