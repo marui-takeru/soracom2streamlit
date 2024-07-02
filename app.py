@@ -170,7 +170,7 @@ if response.status_code == 200:
         st.pyplot(fig)
 
         # 表の作成
-        st.write(df.set_index('日付').drop(columns=['傾斜角Z', '傾斜角X（縦方向）', '傾斜角Y（横方向）', 'Predicted_X']))
+        st.write(df.set_index('日付').drop(columns=['傾斜角X（縦方向）', 'Predicted_X']))
         
     else:
         st.error('データが存在しません。')
