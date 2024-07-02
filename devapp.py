@@ -137,6 +137,10 @@ if response.status_code == 200:
 
     # データが存在するかチェック
     if not df.empty:
+        # Diff_Xの最新値を取得
+        latest_date = df['日付'].iloc[-1]
+        st.write(f'最新のデータ取得時刻：{latest_date}')
+        
         # データ数の表示
         num_samples = len(df)
         st.write(f'使用されたデータ数：{num_samples}個')
