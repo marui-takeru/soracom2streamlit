@@ -127,10 +127,10 @@ if response.status_code == 200:
         reg_coef = reg.coef_[0]
     
         # データの修正
-        df['傾斜角度'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+        df['補正角度'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
     
         # 前回の値との差分を計算して新しい列を追加
-        df['角度変化'] = -df['傾斜角度'].diff().shift(-1)
+        df['角度変化'] = -df['補正角度'].diff().shift(-1)
         df['角度変化'].iloc[-1] = 0  # 最後の行に0を設定
     
         #  '角度変化'の最新値を取得
@@ -172,7 +172,7 @@ if response.status_code == 200:
 
         # 表の作成
         # 表示したい列の順番を指定
-        columns_order = ['角度変化', '傾斜角度', '傾斜角X', '電圧', '気温', '湿度']
+        columns_order = ['角度変化', '補正角度', '傾斜角X', '電圧', '気温', '湿度']
         
         # 表を表示
         st.write(df.set_index('日付')[columns_order])
