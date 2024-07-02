@@ -189,7 +189,7 @@ if response.status_code == 200:
         df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
         
         # グラフのプロット
-        fig, ax = plt.subplots(4, 1, figsize=(10, 20))
+        fig, ax = plt.subplots(5, 1, figsize=(10, 20))
         
         ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
         ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
@@ -207,6 +207,10 @@ if response.status_code == 200:
         ax[3].plot(df['日付'], df['気温'], label='Temperature')
         ax[3].set_title('Temperature')
         ax[3].legend()
+        
+        ax[4].plot(df['日付'], df['電圧'], label='Volt')
+        ax[4].set_title('Volt')
+        ax[4].legend()
 
         st.pyplot(fig)
 
