@@ -137,8 +137,8 @@ if response.status_code == 200:
 
     # データが存在するかチェック
     if not df.empty:
-        # Diff_Xの最新値を取得
-        latest_date = df['日付'].iloc[-1]
+        # 最新のデータ取得時刻を表示
+        latest_date = df['日付'].max()
         st.write(f'最新のデータ取得時刻：{latest_date}')
         
         # データ数の表示
