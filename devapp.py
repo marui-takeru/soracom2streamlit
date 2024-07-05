@@ -164,7 +164,7 @@ if response.status_code == 200:
         df['Diff_X'].iloc[-1] = 0  # 最後の行に0を設定
     
         #  '角度変化'の最新値を取得
-        latest_diff_x = df['Diff_X'].iloc[1]
+        latest_diff_x = df['Diff_X'].iloc[-1]
         st.write(f'最新の差分値：{latest_diff_x}')
 
         # 背景色の設定
