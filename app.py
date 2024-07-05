@@ -135,7 +135,7 @@ if response.status_code == 200:
     
         #  '角度変化'の最新値を取得
         latest_diff_x = df['角度変化'].iloc[0]
-        st.write(latest_diff_x)
+        st.write(f'最新の角度変化：{latest_diff_x}')
     
         # 背景色の設定
         background_color = '#ffffff'  # Default white
