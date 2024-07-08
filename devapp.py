@@ -216,10 +216,10 @@ if response.status_code == 200:
 
         # 表の作成
         # 表示したい列の順番を指定
-        column_order = ['角度変化', '補正角度', '傾斜角X', '気温', '温度']
+        columns_order = ['角度変化', '補正角度', '傾斜角X', '気温', '温度']
         
         # 表の作成
-        st.write(df.set_index('日付')[column_order])
+        st.write(df.set_index('日付')[columns_order])
             
     else:
         st.error('過去7日分のデータが存在しません。')
