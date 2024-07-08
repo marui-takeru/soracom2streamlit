@@ -216,7 +216,7 @@ if response.status_code == 200:
 
         # 表の作成
         # 表示したい列の順番を指定
-        columns_order = ['角度変化', '補正角度', '傾斜角X', '気温', '温度']
+        columns_order = ['角度変化', '補正角度', '傾斜角X', '気温', '湿度']
         
         # 表の作成
         st.write(df.set_index('日付')[columns_order])
