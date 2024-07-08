@@ -47,7 +47,7 @@ date_start = current_time - datetime.timedelta(days=7)  # 過去7日分のデー
 
 # Set the start and end date times
 date_start = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
-date_end = current_time
+date_end = date_end.replace(hour=23, minute=59, second=59, microsecond=999999)
 
 # Convert to Unix timestamps
 unix_timestamp_ms_start = int(date_start.timestamp() * 1000)
