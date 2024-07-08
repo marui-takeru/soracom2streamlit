@@ -156,15 +156,15 @@ if response.status_code == 200:
         st.write(f'回帰係数：{reg_coef}')
 
         # データの修正
-        df['Predicted_X'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
+        df['補正角度'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
         st.write(f'平均気温：{Tave}℃')
 
         # 前回の値との差分を計算して新しい列を追加
-        df['Diff_X'] = -df['Predicted_X'].diff().shift(-1)
-        df['Diff_X'].iloc[-1] = 0  # 最後の行に0を設定
+        df['角度変化'] = -df['補正角度'].diff().shift(-1)
+        df['角度変化'].iloc[-1] = 0  # 最後の行に0を設定
     
         #  '角度変化'の最新値を取得
-        latest_diff_x = df['Diff_X'].iloc[0]
+        latest_diff_x = df['角度変化'].iloc[0]
         st.write(f'最新の差分値：{latest_diff_x}')
 
         # 背景色の設定
@@ -186,17 +186,17 @@ if response.status_code == 200:
         st.markdown(background_color_css, unsafe_allow_html=True)
 
         # 累積変化の計算
-        df['Cumulative_Diff_X'] = df['Diff_X'].cumsum()
+        df['Cumulative_Diff_X'] = df['角度変化'].cumsum()
         
         # グラフのプロット
         fig, ax = plt.subplots(5, 1, figsize=(10, 20))
         
-        ax[0].plot(df['日付'], df['Predicted_X'], label='Corrected X', linestyle='--')
+        ax[0].plot(df['日付'], df['補正角度'], label='Corrected X', linestyle='--')
         ax[0].plot(df['日付'], df['傾斜角X（縦方向）'], label='Original X')
         ax[0].set_title('Value X')
         ax[0].legend()
 
-        ax[1].plot(df['日付'], df['Diff_X'], label='Diff X', color='red')
+        ax[1].plot(df['日付'], df['角度変化'], label='Diff X', color='red')
         ax[1].set_title('Difference X')
         ax[1].legend()
         
@@ -215,7 +215,11 @@ if response.status_code == 200:
         st.pyplot(fig)
 
         # 表の作成
-        st.write(df.set_index('日付').drop(columns=['傾斜角Z', '傾斜角X（縦方向）', '傾斜角Y（横方向）', 'Predicted_X']))
+        # 表示したい列の順番を指定
+        column_order = ['角度変化', '補正角度', '傾斜角X', '気温', '温度']
+        
+        # 表の作成
+        st.write(df.set_index('日付')[column_order])
             
     else:
         st.error('過去7日分のデータが存在しません。')
