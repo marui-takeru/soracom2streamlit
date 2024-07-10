@@ -166,6 +166,7 @@ if all_data:
     else:
         st.error('データが存在しません。')
 else:
+    st.error('データが取得できませんでした。')
 
 # クリックすると各傾斜計デバイスを表示するアプリに移動
 st.markdown(
