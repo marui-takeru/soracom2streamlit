@@ -139,6 +139,26 @@ if all_data:
             # '角度変化'の最新値を取得
             latest_diff_x = sensor_df['角度変化'].iloc[0] if not sensor_df.empty else 'N/A'
             st.write(f'最新の角度変化：{latest_diff_x}')
+
+            # 背景色の設定
+            background_color = '#ffffff'  # Default white
+            if 0.0 <= abs(latest_diff_x) < 0.05:
+                background_color = '#ccffcc'  # Green
+            elif 0.05 <= abs(latest_diff_x) < 0.1:
+                background_color = '#ffff99'  # Yellow
+            else:
+                background_color = '#ff9999'  # Red
+            
+            # Display the latest values with background color
+            st.markdown(
+                f"""
+                <div style="background-color: {background_color}; padding: 10px; border-radius: 5px;">
+                    <p><strong>最新のデータ取得時刻：</strong>{latest_date}</p>
+                    <p><strong>最新の角度変化：</strong>{latest_diff_x}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
             
     else:
         st.error('データが存在しません。')
