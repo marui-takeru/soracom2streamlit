@@ -6,20 +6,6 @@ import datetime
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 
-# CSSを使って背景色とテキスト色を設定
-st.markdown(
-    """
-    <style>
-    body {
-        background-color: #ffffff;
-        color: #000000;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-
 # APIの認証情報を環境変数から取得
 api_username = st.secrets.APIs.api_username
 api_password = st.secrets.APIs.api_password
