@@ -159,7 +159,8 @@ if all_data:
                     """,
                     unsafe_allow_html=True
                 )
-                st.write(sensor_df)
+                # 表の作成
+                # st.write(sensor_df)
             else:
                 st.warning(f'{sensor}のデータが存在しません。')
             
