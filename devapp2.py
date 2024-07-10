@@ -5,7 +5,6 @@ import requests
 import datetime
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
-import streamlit.components.v1 as components
 
 # APIの認証情報を環境変数から取得
 api_username = st.secrets.APIs.api_username
@@ -79,48 +78,28 @@ url_display_names = {
     "１０：ヒラノジ": url10
 }
 
-# Select a URL using a dropdown
-selected_display_name = st.selectbox('閲覧したい傾斜センサを選んでください', list(url_display_names.keys()))
-selected_url = url_display_names[selected_display_name]
+# Fetch data for all URLs
+all_data = []
 
-# Fetch data for the selected URL
-response = requests.get(selected_url, headers=headers, params=params)
+for display_name, url in url_display_names.items():
+    response = requests.get(url, headers=headers, params=params)
 
-if response.status_code == 200:
-    data = response.json()
+    if response.status_code == 200:
+        data = response.json()
+        for item in data:
+            inclination = item['content'].split(',')
+            inclination.append(display_name)
+            all_data.append(inclination)
+    else:
+        st.error(f"Failed to fetch data from {url}. Status code: {response.status_code}")
 
-    # Create DataFrame
-    inclination = []
-    for item in data:
-        inclination.append(item['content'].split(','))
-
-    # 前回の値を保持するための変数
-    prev_value = None
-    
-    # 数値型に変換し、閾値条件を適用する関数
-    def convert_to_numeric_with_threshold(value):
-        global prev_value
-        try:
-            current_value = float(value)
-            if prev_value is None:
-                prev_value = current_value
-                return current_value
-    
-            # 前回の値との差が3度以上の場合はNaNを返す
-            if abs(current_value - prev_value) >= 3:
-                return float('NaN')
-    
-            # 差が3度未満の場合はそのまま数値に変換
-            prev_value = current_value
-            return current_value
-        except ValueError:
-            return float('NaN')
-
-    df = pd.DataFrame(inclination, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度'])
+# Create DataFrame
+if all_data:
+    df = pd.DataFrame(all_data, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度', 'センサー'])
 
     # Convert columns to appropriate data types
     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
-    df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(convert_to_numeric_with_threshold)
+    df['傾斜角X（縦方向）'] = df['傾斜角X'].apply(pd.to_numeric, errors='coerce')
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
     
     # NaNを含む行を削除する
@@ -155,11 +134,18 @@ if response.status_code == 200:
         df['角度変化'] = -df['補正角度'].diff().shift(-1)
         df['角度変化'].iloc[-1] = 0  # 最後の行に0を設定
     
-        #  '角度変化'の最新値を取得
+        # '角度変化'の最新値を取得
         latest_diff_x = df['角度変化'].iloc[0]
         st.write(f'最新の角度変化：{latest_diff_x}')
         
+        # Display data for each sensor
+        for sensor in url_display_names.keys():
+            st.subheader(sensor)
+            sensor_df = df[df['センサー'] == sensor]
+            st.write(sensor_df)
+            
     else:
         st.error('データが存在しません。')
 else:
-    st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
+    st.error('データが取得できませんでした。')
+
