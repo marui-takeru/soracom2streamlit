@@ -6,8 +6,19 @@ import datetime
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 
-# 夜モードをオフにする
-st.set_page_config(page_title="【開発版2】堂野窪 傾斜センサ", layout="wide", initial_sidebar_state="expanded")
+# CSSを使って背景色とテキスト色を設定
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 
 # APIの認証情報を環境変数から取得
 api_username = st.secrets.APIs.api_username
