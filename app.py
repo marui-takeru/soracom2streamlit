@@ -191,8 +191,8 @@ if response.status_code == 200:
         ax.set_ylim(-0.2, 0.2)
 
         # 縦軸の値が0.05と0.1の場所に波線を描画
-        ax.axhline(y=0.05, color='yellow', linestyle='dotted', label='注意')
-        ax.axhline(y=-0.05, color='yellow', linestyle='dotted', label='注意')
+        ax.axhline(y=0.05, color='black', linestyle='dotted', label='注意')
+        ax.axhline(y=-0.05, color='black', linestyle='dotted', label='注意')
         ax.axhline(y=0.1, color='red', linestyle='dotted', label='危険')
         ax.axhline(y=-0.1, color='red', linestyle='dotted', label='危険')
         
