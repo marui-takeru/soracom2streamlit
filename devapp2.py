@@ -134,11 +134,9 @@ if all_data:
 
             # 最新のデータ取得時刻を表示
             latest_date = sensor_df['日付'].max()
-            st.write(f'最新のデータ取得時刻：{latest_date}')
             
             # '角度変化'の最新値を取得
             latest_diff_x = sensor_df['角度変化'].iloc[0] if not sensor_df.empty else 'N/A'
-            st.write(f'最新の角度変化：{latest_diff_x}')
 
             # 背景色の設定
             background_color = '#ffffff'  # Default white
