@@ -25,7 +25,7 @@ url09 = st.secrets.APIs.url09
 url10 = st.secrets.APIs.url10
 
 # Streamlit app
-st.title('堂野窪 傾斜センサ')
+st.title('【開発版2】堂野窪 傾斜センサ')
 
 # APIキーとトークンを作成
 auth = (api_username, api_password)
@@ -158,54 +158,6 @@ if response.status_code == 200:
         #  '角度変化'の最新値を取得
         latest_diff_x = df['角度変化'].iloc[0]
         st.write(f'最新の角度変化：{latest_diff_x}')
-    
-        # 背景色の設定
-        background_color = '#ffffff'  # Default white
-        if 0.0 <= abs(latest_diff_x) < 0.05:
-            background_color = '#ccffcc'  # Green
-        elif 0.05 <= abs(latest_diff_x) < 0.1:
-            background_color = '#ffff99'  # Yellow
-        else:
-            background_color = '#ff9999'  # Red
-
-        background_color_css = f"""
-        <style>
-            .stApp {{
-                background-color: {background_color};
-            }}
-        </style>
-        """
-        st.markdown(background_color_css, unsafe_allow_html=True)
-        
-        # グラフのプロット
-        fig, ax = plt.subplots(figsize=(10, 5))  # 1x1のサブプロットを作成
-        
-        # '日付' を x 軸、'Diff_X' を y 軸にプロット
-        ax.plot(df['日付'], df['角度変化'], label='Sabun', color='black')
-        ax.set_title('Kakudo Henka')
-        ax.set_xlabel('YYYY-MM-DD')  # x 軸のラベルを設定
-        ax.set_ylabel('Kakudo Henka')  # y 軸のラベルを設定
-        ax.legend()
-    
-        # 縦軸のレンジを -0.2 から 0.2 までで固定
-        ax.set_ylim(-0.2, 0.2)
-
-        # 縦軸の値が0.05と0.1の場所に波線を描画
-        ax.axhline(y=0.05, color='black', linestyle='dotted', label='注意')
-        ax.axhline(y=-0.05, color='black', linestyle='dotted', label='注意')
-        ax.axhline(y=0.1, color='red', linestyle='dotted', label='危険')
-        ax.axhline(y=-0.1, color='red', linestyle='dotted', label='危険')
-        
-        
-        # Streamlit でグラフを表示
-        st.pyplot(fig)
-
-        # 表の作成
-        # 表示したい列の順番を指定
-        columns_order = ['角度変化', '補正角度', '傾斜角X', '電圧', '気温', '湿度']
-        
-        # 表を表示
-        st.write(df.set_index('日付')[columns_order])
         
     else:
         st.error('データが存在しません。')
