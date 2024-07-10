@@ -157,6 +157,7 @@ if all_data:
                 """,
                 unsafe_allow_html=True
             )
+            st.write(sensor_df)
             
     else:
         st.error('データが存在しません。')
