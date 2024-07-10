@@ -109,7 +109,6 @@ if all_data:
     if not df.empty:
         # 最新のデータ取得時刻を表示
         latest_date = df['日付'].max()
-        st.write(f'最新のデータ取得時刻：{latest_date}')
         
         # データ数の表示
         num_samples = len(df)
@@ -136,13 +135,14 @@ if all_data:
     
         # '角度変化'の最新値を取得
         latest_diff_x = df['角度変化'].iloc[0]
-        st.write(f'最新の角度変化：{latest_diff_x}')
         
         # Display data for each sensor
         for sensor in url_display_names.keys():
             st.subheader(sensor)
-            sensor_df = df[df['センサー'] == sensor]
-            st.write(sensor_df)
+            st.write(f'最新のデータ取得時刻：{latest_date}')
+            st.write(f'最新の角度変化：{latest_diff_x}')
+            # sensor_df = df[df['センサー'] == sensor]
+            # st.write(sensor_df)
             
     else:
         st.error('データが存在しません。')
