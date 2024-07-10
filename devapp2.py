@@ -107,57 +107,61 @@ if all_data:
 
     # データが存在するかチェック
     if not df.empty:
-        # 平均気温の計算
-        Tave = df['気温'].mean()
-    
-        # 選択した期間内のデータを使用して単回帰分析を行う
-        X = df['気温'].values.reshape(-1, 1)
-        y = df['傾斜角X（縦方向）'].values
-        
-        # 線形回帰モデルを構築
-        reg = LinearRegression().fit(X, y)
-        
-        # 回帰係数を取得
-        reg_coef = reg.coef_[0]
-    
-        # データの修正
-        df['補正角度'] = df['傾斜角X（縦方向）'] - reg_coef * (df['気温'] - Tave)
-    
-        # 前回の値との差分を計算して新しい列を追加
-        df['角度変化'] = -df['補正角度'].diff().shift(-1)
-        df['角度変化'].iloc[-1] = 0  # 最後の行に0を設定
-    
-        # Display data for each sensor
+        # 各センサーごとにデータを処理
         for sensor in url_display_names.keys():
             st.subheader(sensor)
             sensor_df = df[df['センサー'] == sensor]
 
-            # 最新のデータ取得時刻を表示
-            latest_date = sensor_df['日付'].max()
-            
-            # '角度変化'の最新値を取得
-            latest_diff_x = sensor_df['角度変化'].iloc[0] if not sensor_df.empty else 'N/A'
+            # データが存在するかチェック
+            if not sensor_df.empty:
+                # 平均気温の計算
+                Tave = sensor_df['気温'].mean()
 
-            # 背景色の設定
-            background_color = '#ffffff'  # Default white
-            if 0.0 <= abs(latest_diff_x) < 0.05:
-                background_color = '#ccffcc'  # Green
-            elif 0.05 <= abs(latest_diff_x) < 0.1:
-                background_color = '#ffff99'  # Yellow
+                # 選択した期間内のデータを使用して単回帰分析を行う
+                X = sensor_df['気温'].values.reshape(-1, 1)
+                y = sensor_df['傾斜角X（縦方向）'].values
+
+                # 線形回帰モデルを構築
+                reg = LinearRegression().fit(X, y)
+
+                # 回帰係数を取得
+                reg_coef = reg.coef_[0]
+
+                # データの修正
+                sensor_df['補正角度'] = sensor_df['傾斜角X（縦方向）'] - reg_coef * (sensor_df['気温'] - Tave)
+
+                # 前回の値との差分を計算して新しい列を追加
+                sensor_df['角度変化'] = -sensor_df['補正角度'].diff().shift(-1)
+                sensor_df['角度変化'].iloc[-1] = 0  # 最後の行に0を設定
+
+                # 最新のデータ取得時刻を表示
+                latest_date = sensor_df['日付'].max()
+
+                # '角度変化'の最新値を取得
+                latest_diff_x = sensor_df['角度変化'].iloc[0] if not sensor_df.empty else 'N/A'
+
+                # 背景色の設定
+                background_color = '#ffffff'  # Default white
+                if 0.0 <= abs(latest_diff_x) < 0.05:
+                    background_color = '#ccffcc'  # Green
+                elif 0.05 <= abs(latest_diff_x) < 0.1:
+                    background_color = '#ffff99'  # Yellow
+                else:
+                    background_color = '#ff9999'  # Red
+
+                # Display the latest values with background color
+                st.markdown(
+                    f"""
+                    <div style="background-color: {background_color}; padding: 10px; border-radius: 5px;">
+                        <p><strong>最新のデータ取得時刻：</strong>{latest_date}</p>
+                        <p><strong>最新の角度変化：</strong>{latest_diff_x}</p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+                st.write(sensor_df)
             else:
-                background_color = '#ff9999'  # Red
-            
-            # Display the latest values with background color
-            st.markdown(
-                f"""
-                <div style="background-color: {background_color}; padding: 10px; border-radius: 5px;">
-                    <p><strong>最新のデータ取得時刻：</strong>{latest_date}</p>
-                    <p><strong>最新の角度変化：</strong>{latest_diff_x}</p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-            st.write(sensor_df)
+                st.warning(f'{sensor}のデータが存在しません。')
             
     else:
         st.error('データが存在しません。')
