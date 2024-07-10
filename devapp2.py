@@ -211,3 +211,11 @@ if response.status_code == 200:
         st.error('データが存在しません。')
 else:
     st.error(f"Failed to fetch data from {selected_url}. Status code: {response.status_code}")
+
+# クリックすると傾斜計一覧を表示するアプリに移動
+st.markdown(
+    """
+    最初の画面は[こちら](https://soracom2app-axo9ehtqy4kcq9tcpflawj.streamlit.app/)
+    """,
+    unsafe_allow_html=True
+)
