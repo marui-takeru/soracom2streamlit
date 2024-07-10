@@ -161,11 +161,15 @@ if all_data:
                 )
                 # 表の作成
                 # st.write(sensor_df)
+            st.markdown(
+                """
+                詳細は[こちら](https://soracom2app-devapp2.streamlit.app/)をクリックしてください。
+                """,
+                unsafe_allow_html=True
+            )
             else:
-                st.warning(f'{sensor}のデータが存在しません。')
-            
+                st.warning(f'{sensor}のデータが存在しません。')            
     else:
         st.error('データが存在しません。')
 else:
     st.error('データが取得できませんでした。')
-
