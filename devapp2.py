@@ -107,12 +107,6 @@ if all_data:
 
     # データが存在するかチェック
     if not df.empty:
-        # 最新のデータ取得時刻を表示
-        latest_date = df['日付'].max()
-        
-        # データ数の表示
-        num_samples = len(df)
-        
         # 平均気温の計算
         Tave = df['気温'].mean()
     
@@ -133,16 +127,17 @@ if all_data:
         df['角度変化'] = -df['補正角度'].diff().shift(-1)
         df['角度変化'].iloc[-1] = 0  # 最後の行に0を設定
     
-        # '角度変化'の最新値を取得
-        latest_diff_x = df['角度変化'].iloc[0]
-        
         # Display data for each sensor
         for sensor in url_display_names.keys():
             st.subheader(sensor)
+            sensor_df = df[df['センサー'] == sensor]
+
+            # 最新のデータ取得時刻を表示
+            latest_date = sensor_df['日付'].max()
             st.write(f'最新のデータ取得時刻：{latest_date}')
+            
+            # '角度変化'の最新値を取得
             st.write(f'最新の角度変化：{latest_diff_x}')
-            # sensor_df = df[df['センサー'] == sensor]
-            # st.write(sensor_df)
             
     else:
         st.error('データが存在しません。')
