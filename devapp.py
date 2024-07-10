@@ -199,6 +199,8 @@ if response.status_code == 200:
         ax[1].plot(df['日付'], df['角度変化'], label='Diff X', color='red')
         ax[1].set_title('Difference X')
         ax[1].legend()
+        # 縦軸のレンジを -0.2 から 0.2 までで固定
+        ax[1].set_ylim(-0.2, 0.2)
         
         ax[2].plot(df['日付'], df['Cumulative_Diff_X'], label='Cumulative Diff X', color='green')
         ax[2].set_title('Cumulative Difference X')
@@ -216,7 +218,7 @@ if response.status_code == 200:
 
         # 表の作成
         # 表示したい列の順番を指定
-        columns_order = ['角度変化', '補正角度', '傾斜角X', '気温', '湿度']
+        columns_order = ['角度変化', '補正角度', '傾斜角X', '電圧', '気温', '湿度']
         
         # 表の作成
         st.write(df.set_index('日付')[columns_order])
