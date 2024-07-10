@@ -201,6 +201,11 @@ if response.status_code == 200:
         ax[1].legend()
         # 縦軸のレンジを -0.2 から 0.2 までで固定
         ax[1].set_ylim(-0.2, 0.2)
+        # 縦軸の値が0.05と0.1の場所に波線を描画
+        ax.axhline(y=0.05, color='black', linestyle='dotted', label='注意')
+        ax.axhline(y=-0.05, color='black', linestyle='dotted', label='注意')
+        ax.axhline(y=0.1, color='red', linestyle='dotted', label='危険')
+        ax.axhline(y=-0.1, color='red', linestyle='dotted', label='危険')
         
         ax[2].plot(df['日付'], df['Cumulative_Diff_X'], label='Cumulative Diff X', color='green')
         ax[2].set_title('Cumulative Difference X')
