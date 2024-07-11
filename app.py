@@ -4,7 +4,6 @@ import json
 import requests
 import datetime
 from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
 
 # APIの認証情報を環境変数から取得
 api_username = st.secrets.APIs.api_username
@@ -142,7 +141,9 @@ if all_data:
 
                 # 背景色の設定
                 background_color = '#ffffff'  # Default white
-                if 0.0 <= abs(latest_diff_x) < 0.05:
+                if (current_time - latest_date) > datetime.timedelta(hours=1):
+                    background_color = '#d3d3d3'  # Gray
+                elif 0.0 <= abs(latest_diff_x) < 0.05:
                     background_color = '#ccffcc'  # Green
                 elif 0.05 <= abs(latest_diff_x) < 0.1:
                     background_color = '#ffff99'  # Yellow
