@@ -141,14 +141,16 @@ if all_data:
 
                 # 背景色の設定
                 background_color = '#ffffff'  # Default white
-                if (current_time - latest_date) > datetime.timedelta(hours=1):
-                    background_color = '#d3d3d3'  # Gray
-                elif 0.0 <= abs(latest_diff_x) < 0.05:
+                if 0.0 <= abs(latest_diff_x) < 0.05:
                     background_color = '#ccffcc'  # Green
                 elif 0.05 <= abs(latest_diff_x) < 0.1:
                     background_color = '#ffff99'  # Yellow
                 else:
                     background_color = '#ff9999'  # Red
+                
+                # 最新データが1時間以上前のものであれば背景色をグレーに設定
+                if (current_time - latest_date) > datetime.timedelta(hours=1):
+                    background_color = '#d3d3d3'  # Gray
 
                 # Display the latest values with background color
                 st.markdown(
