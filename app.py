@@ -21,8 +21,8 @@ url07 = st.secrets.APIs.url07
 url08 = st.secrets.APIs.url08
 url09 = st.secrets.APIs.url09
 url10 = st.secrets.APIs.url10
-url11 = st.secrets.APIs.url11
-url12 = st.secrets.APIs.url12
+# url11 = st.secrets.APIs.url11
+# url12 = st.secrets.APIs.url12
 
 # Streamlit app
 st.title('堂野窪 傾斜センサ')
