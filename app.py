@@ -76,9 +76,9 @@ url_display_names = {
     "７：名古谷2": url07,
     "８：横之地": url08,
     "９：集会所上": url09,
-    "１０：ヒラノジ": url10,
-    "１１：予備１": url11,
-    "１２：予備２": url12
+    "１０：ヒラノジ": url10
+    # "１１：予備１": url11,
+    # "１２：予備２": url12
 }
 
 # Fetch data for all URLs
