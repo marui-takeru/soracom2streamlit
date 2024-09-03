@@ -121,6 +121,7 @@ if response.status_code == 200:
     # Convert columns to appropriate data types
     df['日付'] = pd.to_datetime(df['日付'], errors='coerce')
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
+    df['傾斜角X（縦方向）'] = pd.to_numeric(df['傾斜角X'], errors='coerce')
     
     # url03とurl07以外に対してのみ傾斜角Xを数値に変換する
     # mask = ~df['センサー'].isin(["３：名古谷1", "７：名古谷2"])
