@@ -94,6 +94,29 @@ for display_name, url in url_display_names.items():
 
 # Create DataFrame
 if all_data:
+    
+    # 前回の値を保持するための変数
+    prev_value = None
+    
+    # 数値型に変換し、閾値条件を適用する関数
+    def convert_to_numeric_with_threshold(value):
+        global prev_value
+        try:
+            current_value = float(value)
+            if prev_value is None:
+                prev_value = current_value
+                return current_value
+    
+            # 前回の値との差が3度以上の場合はNaNを返す
+            if abs(current_value - prev_value) >= 3:
+                return float('NaN')
+    
+            # 差が3度未満の場合はそのまま数値に変換
+            prev_value = current_value
+            return current_value
+        except ValueError:
+            return float('NaN')
+            
     df = pd.DataFrame(all_data, columns=['日付', '傾斜角X', '傾斜角Y', '傾斜角Z', '電圧', '気温', '湿度', 'センサー'])
 
     # Convert columns to appropriate data types
