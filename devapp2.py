@@ -123,8 +123,8 @@ if response.status_code == 200:
     df['気温'] = pd.to_numeric(df['気温'], errors='coerce')
     
     # url03とurl07以外に対してのみ傾斜角Xを数値に変換する
-    mask = ~df['センサー'].isin(["３：名古谷1", "７：名古谷2"])
-    df.loc[mask, '傾斜角X（縦方向）'] = df.loc[mask, '傾斜角X'].apply(pd.to_numeric, errors='coerce')
+    # mask = ~df['センサー'].isin(["３：名古谷1", "７：名古谷2"])
+    # df.loc[mask, '傾斜角X（縦方向）'] = df.loc[mask, '傾斜角X'].apply(pd.to_numeric, errors='coerce')
     
     # NaNを含む行を削除する
     df = df.dropna()
