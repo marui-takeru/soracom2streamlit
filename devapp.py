@@ -41,8 +41,8 @@ api_key = auth_response['apiKey']
 api_token = auth_response['token']
 
 # Calculate the time range based on the selected option
-date_start = datetime.datetime(2025, 6, 23, 0, 0, 0, 0)
-date_end = datetime.datetime(2025, 6, 25, 23, 59, 59, 999999)
+date_start = datetime.datetime(2025, 6, 22, 15, 0, 0, 0)
+date_end = datetime.datetime(2025, 6, 25, 14, 59, 59, 999999)
 
 # Convert to Unix timestamps
 unix_timestamp_ms_start = int(date_start.timestamp() * 1000)
