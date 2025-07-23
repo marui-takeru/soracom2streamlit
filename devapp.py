@@ -41,9 +41,13 @@ api_key = auth_response['apiKey']
 api_token = auth_response['token']
 
 # Calculate the time range based on the selected option
-date_start = datetime.datetime(2025, 6, 23, 0, 0, 0,0)
-date_end = datetime.datetime(2025, 6, 25, 23, 59, 59,999999)
+current_time = datetime.datetime.now()
+date_end = current_time  # 現在の日付
+date_start = current_time - datetime.timedelta(days=7)  # 過去7日分のデータを描画
 
+# Set the start and end date times
+date_start = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
+date_end = date_end.replace(hour=23, minute=59, second=59, microsecond=999999)
 
 # Convert to Unix timestamps
 unix_timestamp_ms_start = int(date_start.timestamp() * 1000)
