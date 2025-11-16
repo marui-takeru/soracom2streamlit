@@ -43,7 +43,7 @@ api_token = auth_response['token']
 current_time = datetime.datetime.now()
 
 date_end = current_time  # 現在の日付
-date_start = current_time - datetime.timedelta(days=14)  # 14日前の日付
+date_start = current_time - datetime.timedelta(days=7)  # 7日前の日付
 
 # Set the start and end date times
 date_start = date_start.replace(hour=0, minute=0, second=0, microsecond=0)
